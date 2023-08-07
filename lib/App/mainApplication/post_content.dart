@@ -60,14 +60,12 @@ Future<MediaInfo?> encodeXFileVideo(XFile xFile) async {
   await testlengthcontroller.initialize();
 
   if (testlengthcontroller.value.duration.inSeconds > 15) {
-    //XFile? trimmedVideo = await trimAndSaveVideo(xFile, 0, 15);
     final appDirectory = Platform.isAndroid
         ? await getExternalStorageDirectory()
         : await getApplicationDocumentsDirectory();
     final outputPath = '${appDirectory?.path}/out_file.mp4';
 
-    const filename = "x.mp4";
-    //var bytes = await rootBundle.load("assets/x.mp4");
+    const filename = "trimFile.mp4";
     ByteData bytes = await convertXFileToByteData(xFile);
     String dir = (await getApplicationDocumentsDirectory()).path;
     writeToFile(bytes, '$dir/$filename');

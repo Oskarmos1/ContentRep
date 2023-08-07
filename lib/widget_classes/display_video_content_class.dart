@@ -1,8 +1,7 @@
 import "package:flutter/material.dart";
 //import '../backend_classes/content.dart';
 //import '../backend_classes/comment.dart';
-import 'dart:typed_data';
-import 'dart:convert';
+
 import 'dart:io';
 import 'package:video_player/video_player.dart';
 
@@ -16,21 +15,25 @@ class VideoWidget extends StatefulWidget {
 
 class _VideoWidgetState extends State<VideoWidget> {
   bool isPlaying = false;
+  bool started = true;
   late VideoPlayerController loadedVideoFileController;
+  late VideoPlayer display;
+
   @override
   Widget build(BuildContext context) {
-    dynamic display;
     String type = widget.recievedContent["file"]["Type"];
-
-    if (type == "IMAGE") {
-      Uint8List bytes = base64.decode(widget.recievedContent["file"]["File"]);
-      display = Image.memory(bytes);
-    } else if (type == "VIDEO") {
+    if (started == true) {
       loadedVideoFileController = VideoPlayerController.file(
-          File(widget.recievedContent["file"]["File"]["path"]));
-      loadedVideoFileController.play();
+          File(widget.recievedContent["file"]["File"]["path"]))
+        ..addListener(() {
+          setState(() {
+            isPlaying = loadedVideoFileController.value.isPlaying;
+          });
+        });
       display = VideoPlayer(loadedVideoFileController);
       loadedVideoFileController.initialize();
+
+      started = false;
     }
 
     String owner = widget.recievedContent["owner"];
@@ -41,6 +44,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     int noOfComments = widget.recievedContent["noOfComments"];
     void dispose() {
       loadedVideoFileController.dispose();
+      print("DISPOSED OF CONTROLLER");
       super.dispose();
     }
 
@@ -61,15 +65,13 @@ class _VideoWidgetState extends State<VideoWidget> {
                 TextButton(
                     onPressed: () {
                       if (isPlaying == false) {
+                        isPlaying = true;
+                        setState(() {});
                         loadedVideoFileController.play();
-                        setState(() {
-                          isPlaying = true;
-                        });
                       } else {
+                        isPlaying = false;
+                        setState(() {});
                         loadedVideoFileController.pause();
-                        setState(() {
-                          isPlaying = false;
-                        });
                       }
                     },
                     child: Text(

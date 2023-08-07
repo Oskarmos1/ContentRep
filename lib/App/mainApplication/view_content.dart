@@ -65,21 +65,25 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
         listener: AdMobService.bannerListener,
         request: const AdRequest())
       ..load());
-    if (x?.isEmpty == false) {
-      setState(() {
-        for (int i = 0; i < x!.length; i++) {
-          String type = x?[i]["file"]["Type"];
-          if (type == "IMAGE") {
-            bigBoi.add(ImageWidget(recievedContent: x?[i]));
-          } else if (type == "VIDEO") {
-            bigBoi.add(VideoWidget(recievedContent: x?[i]));
-          } else {
-            print("UNRECOGNISED FILE TYPE");
-          }
+    try {
+      if (x?.isEmpty == false) {
+        setState(() {
+          for (int i = 0; i < x!.length; i++) {
+            String type = x?[i]["file"]["Type"];
+            if (type == "IMAGE") {
+              bigBoi.add(ImageWidget(recievedContent: x?[i]));
+            } else if (type == "VIDEO") {
+              bigBoi.add(VideoWidget(recievedContent: x?[i]));
+            } else {
+              print("UNRECOGNISED FILE TYPE");
+            }
 
-          canGetNewInfo = true;
-        }
-      });
+            canGetNewInfo = true;
+          }
+        });
+      }
+    } catch (e) {
+      print("$e  _______________________________________________");
     }
   }
 
@@ -146,7 +150,12 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                       if (currentIndex > (bigBoi.length - 10) ||
                           currentIndex == bigBoi.length) {
                         if (canGetNewInfo == true) {
-                          getInfo();
+                          try {
+                            //getInfo();
+                          } catch (e) {
+                            print(e);
+                          }
+
                           canGetNewInfo = false;
                         }
                       }
@@ -195,13 +204,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
           Text("$currentIndex ${bigBoi.length}"),
         ],
       ),
-      /*
-        bottomNavigationBar: Scaffold(
-          body: myBannerAd == null
-              ? Container()
-              : Container(
-                  child: AdWidget(ad: myBannerAd!),
-                ),*/
     );
   }
 }
