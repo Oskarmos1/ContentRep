@@ -51,6 +51,7 @@ dependencies:
   google_mobile_ads: any
   path_provider: ^2.0.15
   video_trimmer: ^2.0.0
+  ffmpeg_kit_flutter: any
 
 
 dev_dependencies:
@@ -72,6 +73,7 @@ dev_dependencies:
 flutter:
   assets:
     - assets/download.jfif
+    - assets/x.mp4
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
