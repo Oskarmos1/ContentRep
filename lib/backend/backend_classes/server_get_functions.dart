@@ -21,9 +21,9 @@ class ServerGetFunctions {
 
       result = returnArray.toList()
         ..sort((a, b) => b.contentScore.compareTo(a.contentScore));
-      if (result.length > 8) {
+      if (result.length > 9) {
         result = result.sublist(0, 10);
-      } else if (result.length <= 8 && result.length > 0) {
+      } else if (result.length <= 9 && result.length > 0) {
         result = result.sublist(0, result.length - 1);
       }
 

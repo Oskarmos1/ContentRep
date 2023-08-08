@@ -70,7 +70,7 @@ Future<MediaInfo?> encodeXFileVideo(XFile xFile) async {
     String dir = (await getApplicationDocumentsDirectory()).path;
     writeToFile(bytes, '$dir/$filename');
     final session = await FFmpegKit.execute(
-        '-ss 0:00:00 -to 0:00:15 -y -i ${'$dir/$filename'} -filter:v "crop=320:150" -c:a copy $outputPath');
+        '-ss 0:00:00 -to 0:00:01 -y -i ${'$dir/$filename'} -filter:v "crop=10:10" -c:a copy $outputPath');
     final returnCode = await session.getReturnCode();
 
     if (ReturnCode.isSuccess(returnCode)) {
@@ -79,7 +79,7 @@ Future<MediaInfo?> encodeXFileVideo(XFile xFile) async {
         quality: VideoQuality.LowQuality,
         deleteOrigin: true,
         includeAudio: true,
-        frameRate: 5,
+        frameRate: 1,
         startTime: 0,
       );
     } else if (ReturnCode.isCancel(returnCode)) {

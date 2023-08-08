@@ -27,7 +27,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   List? x;
   List bigBoi = [];
   List displayList = [];
-
+  GlobalKey<_viewContentState> viewContentKey = GlobalKey<_viewContentState>();
   dynamic display = Placeholder();
   List myInformation = [];
   bool canBeExited = true;
@@ -45,6 +45,19 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
     myInformation =
         await cGI.getMyCurrentInfo("http://192.168.0.19:400", phoneNumber);
     setState(() {});
+  }
+
+  void updateAllVideoWidgetStates() {
+    print("IN UPDATE ALL WIDGET STATES ___________________");
+    if (bigBoi.isNotEmpty) {
+      print("BIG BOI IS NOT EMPTY");
+      for (int i = 0; i < bigBoi.length; i++) {
+        if (bigBoi[i].recievedContent["file"]["Type"] == "VIDEO") {
+          print("I AM A VIDEO AND I AM GOING TO BE DISPOSED OF");
+          bigBoi[i].disposeVideoWidget();
+        }
+      }
+    }
   }
 
   @override
@@ -65,25 +78,30 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
         listener: AdMobService.bannerListener,
         request: const AdRequest())
       ..load());
-    try {
-      if (x?.isEmpty == false) {
-        setState(() {
-          for (int i = 0; i < x!.length; i++) {
-            String type = x?[i]["file"]["Type"];
-            if (type == "IMAGE") {
-              bigBoi.add(ImageWidget(recievedContent: x?[i]));
-            } else if (type == "VIDEO") {
-              bigBoi.add(VideoWidget(recievedContent: x?[i]));
-            } else {
-              print("UNRECOGNISED FILE TYPE");
-            }
 
-            canGetNewInfo = true;
+    if (x?.isEmpty == false) {
+      setState(() {
+        for (int i = 0; i < x!.length; i++) {
+          String type = x?[i]["file"]["Type"];
+          if (type == "IMAGE") {
+            bigBoi.add(ImageWidget(recievedContent: x?[i]));
+          } else if (type == "VIDEO") {
+            try {
+              print("ADDED NEW OBJECT");
+
+              bigBoi.add(VideoWidget(
+                  recievedContent: x?[i],
+                  updateOtherVideoWidgets: updateAllVideoWidgetStates));
+            } catch (e) {
+              print("$e ________________________________");
+            }
+          } else {
+            print("UNRECOGNISED FILE TYPE");
           }
-        });
-      }
-    } catch (e) {
-      print("$e  _______________________________________________");
+
+          canGetNewInfo = true;
+        }
+      });
     }
   }
 
@@ -143,15 +161,11 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
               child: NotificationListener<ScrollNotification>(
                   onNotification: (notification) {
                     if (notification is ScrollUpdateNotification) {
-                      if (displayList.isEmpty == false) {
-                        print("object___________________");
-                      }
-
                       if (currentIndex > (bigBoi.length - 10) ||
                           currentIndex == bigBoi.length) {
                         if (canGetNewInfo == true) {
                           try {
-                            //getInfo();
+                            getInfo();
                           } catch (e) {
                             print(e);
                           }
@@ -209,3 +223,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
 }
 
 //1 for posts and viewing content, 2 for making posts/ content, 3 for texting, 4 for profile info and settings
+
+
+//Issue: when taking pictures from my gallery just says invalid

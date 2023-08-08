@@ -1,52 +1,87 @@
 import "package:flutter/material.dart";
 //import '../backend_classes/content.dart';
 //import '../backend_classes/comment.dart';
-
+import 'package:daily/App/mainApplication/view_content.dart';
 import 'dart:io';
 import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {
   final Map recievedContent;
-  const VideoWidget({super.key, required this.recievedContent});
+  final void Function() updateOtherVideoWidgets;
+  VideoWidget(
+      {super.key,
+      required this.recievedContent,
+      required this.updateOtherVideoWidgets});
+  final _VideoWidgetState x = _VideoWidgetState();
+  State createState() {
+    return x;
+  }
 
-  @override
-  State<VideoWidget> createState() => _VideoWidgetState();
+  void disposeVideoWidget() {
+    x.disposeOfThisWidget();
+  }
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
   bool isPlaying = false;
+  bool canBeCleared = true;
   bool started = true;
-  late VideoPlayerController loadedVideoFileController;
-  late VideoPlayer display;
+  VideoPlayerController? loadedVideoFileController;
+  dynamic display = Placeholder();
+  late viewContent myView;
 
+  void disposeOfThisWidget() {
+    print("IN DISPOSE OF THIS WIDGET____________________");
+    if (loadedVideoFileController != null) {
+      if (loadedVideoFileController!.value.isInitialized == true) {
+        print("I HAVE BEEN INITIALIZED");
+        if (canBeCleared == true) {
+          setState(() {
+            loadedVideoFileController!.dispose();
+            display = Placeholder();
+            print("I HAVE BEEN DISPOSED");
+          });
+        }
+        canBeCleared = true;
+      }
+    }
+  }
+
+  late void Function() killAll;
   @override
   Widget build(BuildContext context) {
-    String type = widget.recievedContent["file"]["Type"];
     if (started == true) {
       loadedVideoFileController = VideoPlayerController.file(
           File(widget.recievedContent["file"]["File"]["path"]))
         ..addListener(() {
-          setState(() {
-            isPlaying = loadedVideoFileController.value.isPlaying;
-          });
+          if (mounted) {
+            if (loadedVideoFileController!.value.position ==
+                loadedVideoFileController!.value.duration) {
+              isPlaying = false;
+              //loadedVideoFileController.dispose();
+            }
+            isPlaying = loadedVideoFileController!.value.isPlaying;
+          }
         });
-      display = VideoPlayer(loadedVideoFileController);
-      loadedVideoFileController.initialize();
-
       started = false;
     }
+    killAll = widget.updateOtherVideoWidgets;
+    void loadContent() {
+      setState(() {
+        loadedVideoFileController!.initialize();
 
+        display = VideoPlayer(loadedVideoFileController!);
+      });
+    }
+
+//VERY FUCKING CLOSE
+    String type = widget.recievedContent["file"]["Type"];
     String owner = widget.recievedContent["owner"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     //List<Comment> comments = widget.recievedContent["comments"];
     int likes = widget.recievedContent["likes"];
     int dislikes = widget.recievedContent["dislikes"];
     int noOfComments = widget.recievedContent["noOfComments"];
-    void dispose() {
-      loadedVideoFileController.dispose();
-      print("DISPOSED OF CONTROLLER");
-      super.dispose();
-    }
 
     return Container(
       child: Column(
@@ -66,12 +101,18 @@ class _VideoWidgetState extends State<VideoWidget> {
                     onPressed: () {
                       if (isPlaying == false) {
                         isPlaying = true;
-                        setState(() {});
-                        loadedVideoFileController.play();
+                        canBeCleared = false;
+                        killAll();
+                        if (loadedVideoFileController != null) {
+                          if (loadedVideoFileController!.value.isInitialized ==
+                              false) {
+                            loadContent();
+                          }
+                        }
+                        loadedVideoFileController!.play();
                       } else {
                         isPlaying = false;
-                        setState(() {});
-                        loadedVideoFileController.pause();
+                        loadedVideoFileController!.pause();
                       }
                     },
                     child: Text(
