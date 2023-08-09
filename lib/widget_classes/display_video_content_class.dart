@@ -25,24 +25,22 @@ class VideoWidget extends StatefulWidget {
 class _VideoWidgetState extends State<VideoWidget> {
   bool isPlaying = false;
   bool canBeCleared = true;
-  bool started = true;
+  bool disposedOf = true;
   VideoPlayerController? loadedVideoFileController;
   dynamic display = Placeholder();
   late viewContent myView;
 
   void disposeOfThisWidget() {
-    print("IN DISPOSE OF THIS WIDGET____________________");
     if (loadedVideoFileController != null) {
-      if (loadedVideoFileController!.value.isInitialized == true) {
-        print("I HAVE BEEN INITIALIZED");
+      if (loadedVideoFileController?.value.isInitialized == true) {
         if (canBeCleared == true) {
           setState(() {
-            loadedVideoFileController!.dispose();
+            isPlaying = false;
+            disposedOf = true;
+            loadedVideoFileController?.dispose();
             display = Placeholder();
-            print("I HAVE BEEN DISPOSED");
           });
         }
-        canBeCleared = true;
       }
     }
   }
@@ -50,31 +48,23 @@ class _VideoWidgetState extends State<VideoWidget> {
   late void Function() killAll;
   @override
   Widget build(BuildContext context) {
-    if (started == true) {
-      loadedVideoFileController = VideoPlayerController.file(
-          File(widget.recievedContent["file"]["File"]["path"]))
-        ..addListener(() {
-          if (mounted) {
-            if (loadedVideoFileController!.value.position ==
-                loadedVideoFileController!.value.duration) {
-              isPlaying = false;
-              //loadedVideoFileController.dispose();
-            }
-            isPlaying = loadedVideoFileController!.value.isPlaying;
-          }
-        });
-      started = false;
-    }
-    killAll = widget.updateOtherVideoWidgets;
     void loadContent() {
       setState(() {
-        loadedVideoFileController!.initialize();
-
+        disposedOf = false;
+        loadedVideoFileController = VideoPlayerController.file(
+            File(widget.recievedContent["file"]["File"]["path"]))
+          ..addListener(() {
+            if (mounted) {
+              isPlaying = loadedVideoFileController!.value.isPlaying;
+            }
+          });
+        loadedVideoFileController?.initialize();
         display = VideoPlayer(loadedVideoFileController!);
       });
     }
 
-//VERY FUCKING CLOSE
+    killAll = widget.updateOtherVideoWidgets;
+
     String type = widget.recievedContent["file"]["Type"];
     String owner = widget.recievedContent["owner"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
@@ -99,16 +89,17 @@ class _VideoWidgetState extends State<VideoWidget> {
                 ),
                 TextButton(
                     onPressed: () {
+                      canBeCleared = false;
+                      killAll();
+                      setState(() {
+                        canBeCleared = true;
+                      });
+                      if (disposedOf == true) {
+                        loadContent();
+                      }
+
                       if (isPlaying == false) {
                         isPlaying = true;
-                        canBeCleared = false;
-                        killAll();
-                        if (loadedVideoFileController != null) {
-                          if (loadedVideoFileController!.value.isInitialized ==
-                              false) {
-                            loadContent();
-                          }
-                        }
                         loadedVideoFileController!.play();
                       } else {
                         isPlaying = false;

@@ -92,15 +92,17 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
               bigBoi.add(VideoWidget(
                   recievedContent: x?[i],
                   updateOtherVideoWidgets: updateAllVideoWidgetStates));
-            } catch (e) {
-              print("$e ________________________________");
-            }
+            } catch (e) {}
           } else {
             print("UNRECOGNISED FILE TYPE");
           }
 
           canGetNewInfo = true;
         }
+      });
+    } else {
+      setState(() {
+        bigBoi.add(Text("Looks Like you've reached the bottom."));
       });
     }
   }
