@@ -102,7 +102,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
       });
     } else {
       setState(() {
-        bigBoi.add(Text("Looks Like you've reached the bottom."));
+        //bigBoi.add(Text("Looks Like you've reached the bottom."));
       });
     }
   }

@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -53,56 +53,78 @@ Future<MediaInfo?> encodeXFileVideo(XFile xFile) async {
     return ByteData.sublistView(bytes);
   }
 
+  String randomChars() {
+    final random = Random();
+    String chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz';
+    String returnString = "";
+    for (int i = 0; i <= 10; i++) {
+      returnString = returnString + chars[random.nextInt(chars.length)];
+    }
+    return returnString;
+  }
+
+  //----------------------------------------------------------------------
   MediaInfo? returning;
+  print("xFile: $xFile __________________");
+  try {
+    VideoPlayerController testlengthcontroller =
+        new VideoPlayerController.file(File(xFile.path));
+    await testlengthcontroller.initialize();
+    print("Duration: ${testlengthcontroller.value.duration}");
+    if (testlengthcontroller.value.duration.inSeconds > 15) {
+      String randomOutputName = randomChars();
+      final appDirectory = Platform.isAndroid
+          ? await getExternalStorageDirectory()
+          : await getApplicationDocumentsDirectory();
+      final outputPath = '${appDirectory?.path}/$randomOutputName.mp4';
+      String inputName = randomChars();
+      print("____________________________________");
+      print("OUTPUT NAME: $randomOutputName");
+      print("iNPUT NAME: $inputName");
 
-  VideoPlayerController testlengthcontroller =
-      new VideoPlayerController.file(File(xFile.path));
-  await testlengthcontroller.initialize();
-
-  if (testlengthcontroller.value.duration.inSeconds > 15) {
-    final appDirectory = Platform.isAndroid
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
-    final outputPath = '${appDirectory?.path}/out_file.mp4';
-
-    const filename = "trimFile.mp4";
-    ByteData bytes = await convertXFileToByteData(xFile);
-    String dir = (await getApplicationDocumentsDirectory()).path;
-    writeToFile(bytes, '$dir/$filename');
-    final session = await FFmpegKit.execute(
-        '-ss 0:00:00 -to 0:00:01 -y -i ${'$dir/$filename'} -filter:v "crop=10:10" -c:a copy $outputPath');
-    final returnCode = await session.getReturnCode();
-
-    if (ReturnCode.isSuccess(returnCode)) {
+      String filename = "$inputName.mp4";
+      ByteData bytes = await convertXFileToByteData(xFile);
+      print("Bytes: $bytes ____________");
+      String dir = (await getApplicationDocumentsDirectory()).path;
+      writeToFile(bytes, '$dir/$filename');
+      final session = await FFmpegKit.execute(
+          '-ss 0:00:00 -to 0:00:15 -y -i ${'$dir/$filename'} -filter:v "crop=100:100" -c:a copy $outputPath');
+      print("Session: $session _________________");
+      //final returnCode = await session.getReturnCode();
+      //print(returnCode);
+      //if (ReturnCode.isSuccess(returnCode)) {
       returning = await VideoCompress.compressVideo(
         outputPath,
         quality: VideoQuality.LowQuality,
         deleteOrigin: true,
         includeAudio: true,
-        frameRate: 1,
-        startTime: 0,
+        frameRate: 5,
       );
-    } else if (ReturnCode.isCancel(returnCode)) {
-      print("Cancel");
+      print("RETURNING: $returning _______________");
+      /*} else if (ReturnCode.isCancel(returnCode)) {
+        print("Cancel");
+      } else {
+        print("Error");
+        final failStackTrace = await session.getFailStackTrace();
+        print(failStackTrace);
+        List logs = await session.getLogs();
+        for (var element in logs) {
+          print(element.getMessage());
+        }
+      }*/
     } else {
-      print("Error");
-      final failStackTrace = await session.getFailStackTrace();
-      print(failStackTrace);
-      List logs = await session.getLogs();
-      for (var element in logs) {
-        print(element.getMessage());
-      }
+      returning = await VideoCompress.compressVideo(
+        xFile.path,
+        quality: VideoQuality.LowQuality,
+        deleteOrigin: true,
+        includeAudio: true,
+        frameRate: 5,
+      );
     }
-  } else {
-    returning = await VideoCompress.compressVideo(
-      xFile.path,
-      quality: VideoQuality.LowQuality,
-      deleteOrigin: true,
-      includeAudio: true,
-      frameRate: 5,
-    );
+  } catch (e) {
+    print("AN ERROR OCCURED____________________________");
+    print("ERROR: $e");
   }
-
   return returning;
 }
 
@@ -118,6 +140,11 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
     super.initState();
 
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -182,6 +209,9 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                   if (pickedFile != null) {
                     MediaInfo? encodedVideo =
                         await encodeXFileVideo(pickedFile);
+
+                    print(
+                        "$encodedVideo _____________________________________");
                     setState(() {});
                     if (encodedVideo != null) {
                       try {
