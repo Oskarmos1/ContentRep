@@ -13,6 +13,7 @@ class VideoWidget extends StatefulWidget {
       required this.recievedContent,
       required this.updateOtherVideoWidgets});
   final _VideoWidgetState x = _VideoWidgetState();
+  @override
   State createState() {
     return x;
   }
@@ -27,7 +28,7 @@ class _VideoWidgetState extends State<VideoWidget> {
   bool canBeCleared = true;
   bool disposedOf = true;
   VideoPlayerController? loadedVideoFileController;
-  dynamic display = Placeholder();
+  dynamic display = const Placeholder();
   late viewContent myView;
 
   void disposeOfThisWidget() {
@@ -38,7 +39,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             isPlaying = false;
             disposedOf = true;
             loadedVideoFileController?.dispose();
-            display = Placeholder();
+            display = const Placeholder();
           });
         }
       }
@@ -77,12 +78,12 @@ class _VideoWidgetState extends State<VideoWidget> {
       child: Column(
         children: <Widget>[
           Text(owner),
-          Container(
+          SizedBox(
             height: 250,
             width: 250,
             child: Row(
               children: <Widget>[
-                Container(
+                SizedBox(
                   height: 150,
                   width: 150,
                   child: display,
@@ -108,14 +109,14 @@ class _VideoWidgetState extends State<VideoWidget> {
                     },
                     child: Text(
                       "ChangeVideoState:$isPlaying",
-                      style: TextStyle(fontSize: 6),
+                      style: const TextStyle(fontSize: 6),
                     ))
               ],
             ),
           ),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
-          Text("COMMENTS NOT IMPLEMENTED YET"),
+          const Text("COMMENTS NOT IMPLEMENTED YET"),
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
           Text("Number of Comments: $noOfComments")

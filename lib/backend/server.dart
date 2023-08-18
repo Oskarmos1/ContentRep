@@ -72,7 +72,7 @@ void handleGet(HttpRequest request) {
   String? phoneNumber = request.uri.queryParameters['phoneNumber'];
   phoneNumber = phoneNumber?.replaceAll(" ", "+");
   String? location = request.uri.queryParameters['location'];
-  var result;
+  Object? result;
 
   if (location == "getContent") {
     result = sGF.getContent(allContent["main"], phoneNumber);

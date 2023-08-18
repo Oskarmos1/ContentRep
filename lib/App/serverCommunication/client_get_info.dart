@@ -10,7 +10,7 @@ class ClientGetInfo {
           .get(Uri.parse(
               "$url?phoneNumber=$phoneNumber&location=${"checkActivity"}"
               ""))
-          .timeout(Duration(seconds: 15));
+          .timeout(const Duration(seconds: 15));
       bool? direction = jsonDecode(information.body);
       return direction;
     } catch (e) {
@@ -23,8 +23,8 @@ class ClientGetInfo {
     try {
       http.Response? information = await http
           .get(Uri.parse(
-              "$url?phoneNumber=${phoneNumber}&location=${"getContent"}"))
-          .timeout(Duration(seconds: 15));
+              "$url?phoneNumber=$phoneNumber&location=${"getContent"}"))
+          .timeout(const Duration(seconds: 15));
       returnContent = jsonDecode(information.body);
     } catch (e) {
       returnContent = [];
@@ -39,7 +39,7 @@ class ClientGetInfo {
       http.Response? information = await http
           .get(Uri.parse(
               "$url?phoneNumber=$phoneNumber&location=${"canGetOldUsername"}"))
-          .timeout(Duration(seconds: 15));
+          .timeout(const Duration(seconds: 15));
       canContinue = jsonDecode(information.body);
     } catch (e) {
       return false;

@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -60,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
           elevation: 0,
         ),
         body: (contacts) == null
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : ListView.builder(
                 itemCount: contacts!.length,
                 itemBuilder: (BuildContext context, int index) {
@@ -77,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       subtitle: Text(num),
                       onTap: () {
                         if (contacts![index].phones.isNotEmpty) {
-                          launch('tel: ${num}');
+                          launch('tel: $num');
                         }
                       });
                 },

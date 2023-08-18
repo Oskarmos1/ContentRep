@@ -35,7 +35,7 @@ class _ImageWidgetState extends State<ImageWidget> {
           display,
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
-          Text("COMMENTS NOT IMPLEMENTED YET"),
+          const Text("COMMENTS NOT IMPLEMENTED YET"),
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
           Text("Number of Comments: $noOfComments")

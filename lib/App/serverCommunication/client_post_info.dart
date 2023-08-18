@@ -14,7 +14,7 @@ class ClientPostInfo {
                 "Username": username,
                 "Location": "UsernameN"
               }))
-          .timeout(Duration(seconds: 15));
+          .timeout(const Duration(seconds: 15));
     } catch (e) {
       returning = false;
     }

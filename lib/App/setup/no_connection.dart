@@ -15,12 +15,12 @@ class _noConnectionState extends State<noConnection> {
         body: SafeArea(
       child: Column(
         children: <Widget>[
-          Text("$errorText"),
+          Text(errorText),
           TextButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/userName');
               },
-              child: Text("Return to username"))
+              child: const Text("Return to username"))
         ],
       ),
     ));

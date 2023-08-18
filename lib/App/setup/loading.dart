@@ -40,12 +40,13 @@ class _loadingState extends State<loading> {
     }
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
           child: Column(
         children: <Widget>[
-          Text("Loading"),
+          const Text("Loading"),
           Text(
             "Failed to load",
             style: TextStyle(color: Colors.black.withOpacity(failOpacity)),
@@ -61,7 +62,7 @@ class _loadingState extends State<loading> {
                     );
                   }
                 },
-                child: Text(
+                child: const Text(
                   "Please try again",
                 )),
           )

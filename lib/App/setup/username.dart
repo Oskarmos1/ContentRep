@@ -34,6 +34,7 @@ class _UsernameState extends State<Username> {
     });
   }
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
@@ -94,7 +95,7 @@ class _UsernameState extends State<Username> {
                       arguments: "Failed to connect to server.");
                 }
               },
-              child: Text("Use your previous account"))
+              child: const Text("Use your previous account"))
         ],
       )),
     );

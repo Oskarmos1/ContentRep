@@ -90,10 +90,10 @@ class _signUpState extends State<signUp> {
                   }
                 });
               },
-              selectorConfig: SelectorConfig(
+              selectorConfig: const SelectorConfig(
                 selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
               ),
-              inputBorder: OutlineInputBorder(),
+              inputBorder: const OutlineInputBorder(),
             ),
             Opacity(
               opacity: buttonOpacity,
@@ -139,7 +139,7 @@ class _signUpState extends State<signUp> {
             ),
             Opacity(
               opacity: waitingOpacity,
-              child: Text("Please wait."),
+              child: const Text("Please wait."),
             ),
             Opacity(
               opacity: verificationOpacity,

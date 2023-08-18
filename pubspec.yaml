@@ -50,10 +50,9 @@ dependencies:
   camera: any
   google_mobile_ads: any
   path_provider: ^2.0.15
-  video_trimmer: ^2.0.0
-  ffmpeg_kit_flutter: any
-
-
+  video_trimmer: any
+  video_editor: ^3.0.0
+  image_editor_plus: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

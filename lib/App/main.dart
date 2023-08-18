@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'setup/loading.dart';
 import 'setup/username.dart';
 import 'mainApplication/view_content.dart';
+import 'package:daily/App/mainApplication/editingFiles/edit_image.dart';
+import 'package:daily/App/mainApplication/editingFiles/edit_video.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -15,7 +17,9 @@ void main() {
       '/userName': (context) => const Username(),
       '/viewContent': (context) => const viewContent(),
       '/postContent': (context) => const postContent(),
-      '/noConnection': (context) => const noConnection()
+      '/noConnection': (context) => const noConnection(),
+      '/editImage': (context) => const EditImage(),
+      '/editVideo': (context) => const EditVideo(),
     },
   ));
 }

@@ -28,7 +28,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   List bigBoi = [];
   List displayList = [];
   GlobalKey<_viewContentState> viewContentKey = GlobalKey<_viewContentState>();
-  dynamic display = Placeholder();
+  dynamic display = const Placeholder();
   List myInformation = [];
   bool canBeExited = true;
   late Uint8List bytes;
@@ -150,12 +150,12 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                 Navigator.pushReplacementNamed(context, '/postContent',
                     arguments: [phoneNumber, username, displayList]);
               },
-              child: Text("POST SOME INFORMATION TO THE SERVER")),
+              child: const Text("POST SOME INFORMATION TO THE SERVER")),
           Container(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                Text("${myInformation.toString()}"),
+                Text(myInformation.toString()),
               ],
             ),
           ),
@@ -196,8 +196,8 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                           if ((i % 10) == 0) {
                             return Column(
                               children: <Widget>[
-                                Text("AN AD SHOULD BE HERE:"),
-                                Container(
+                                const Text("AN AD SHOULD BE HERE:"),
+                                SizedBox(
                                   width: MediaQuery.of(context).size.width,
                                   height: 50,
                                   child: bannerAds.isEmpty
