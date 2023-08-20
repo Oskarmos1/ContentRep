@@ -68,7 +68,7 @@ class _EditImageState extends State<EditImage> {
         body: Column(
           children: <Widget>[
             ElevatedButton(
-              child: const Text("Single image editor"),
+              child: const Text("ImageEditor"),
               onPressed: () async {
                 Uint8List? editedImage = await Navigator.push(
                   context,
@@ -88,7 +88,7 @@ class _EditImageState extends State<EditImage> {
               },
             ),
             displayImage,
-            FloatingActionButton(
+            ElevatedButton(
                 onPressed: () async {
                   if (finalFileBytes == null) {
                     finalFileBytes = fileBytes;

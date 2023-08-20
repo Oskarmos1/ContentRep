@@ -51,8 +51,8 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
             TextButton(
                 onPressed: () async {
                   canBeExited = false;
-                  final picker = ImagePicker();
-                  final pickedFile =
+                  ImagePicker picker = ImagePicker();
+                  XFile? pickedFile =
                       await picker.pickImage(source: ImageSource.gallery);
 
                   if (pickedFile != null) {
