@@ -40,11 +40,11 @@ dependencies:
   url_launcher: any
   shared_preferences: ^2.0.15
   intl_phone_number_input: ^0.7.2
-  firebase_core: ^2.13.1
-  firebase_admin: any
+  firebase_core: ^3.1.0
+  #firebase_admin: ^0.2.0
   firebase_auth: any
-  image_picker: ^0.8.4+4
-  flutter_image_compress: ^1.0.0
+  image_picker: ^1.1.2
+  flutter_image_compress: ^2.3.0
   video_player: any
   video_compress: any
   camera: any
@@ -56,6 +56,10 @@ dependencies:
   image_editor_plus: any
   #flutter_ffmpeg: any
 
+dependency_overrides:
+  extended_image: ^8.2.0  # Override to use this specific version
+  screenshot: ^3.0.0  # Override to use this specific version
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -66,7 +70,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.0
+  flutter_lints: ^4.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

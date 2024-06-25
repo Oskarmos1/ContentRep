@@ -75,7 +75,7 @@ class _ImageEditorExampleState extends State<ImageEditorExample> {
                       imageData,
                       imageData,
                     ],
-                    allowMultiple: true,
+                    //allowMultiple: true,
                   ),
                 ),
               );
