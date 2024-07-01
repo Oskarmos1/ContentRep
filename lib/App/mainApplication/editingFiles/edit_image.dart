@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:flutter/services.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_editor_plus/image_editor_plus.dart';
 
 class EditImage extends StatefulWidget {
@@ -43,12 +42,12 @@ class _EditImageState extends State<EditImage> {
   dynamic displayImage = Placeholder();
   @override
   Widget build(BuildContext context) {
-    List viewContentRecievedInfo =
+    List postContentRecievedInfo =
         ModalRoute.of(context)!.settings.arguments as List;
-    pickedFile = viewContentRecievedInfo[1];
-    phoneNumber = viewContentRecievedInfo[0][0];
-    username = viewContentRecievedInfo[0][1];
-    displayList = viewContentRecievedInfo[0][2];
+    pickedFile = postContentRecievedInfo[1];
+    phoneNumber = postContentRecievedInfo[0][0];
+    username = postContentRecievedInfo[0][1];
+    displayList = postContentRecievedInfo[0][2];
     void trial() async {
       fileBytes = await pickedFile.readAsBytes();
       setState(() {
@@ -106,7 +105,7 @@ class _EditImageState extends State<EditImage> {
                       }));
 
                   Navigator.pushReplacementNamed(context, '/viewContent',
-                      arguments: displayList);
+                      arguments: [postContentRecievedInfo[0], "editImage"]);
                 },
                 child: Text("PRESS ME TO POST THE IMAGE"))
           ],

@@ -1,6 +1,6 @@
+import 'package:daily/App/serverCommunication/client_post_info.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:daily/App/serverCommunication/client_post_info.dart';
 
 class postContent extends StatefulWidget {
   const postContent({super.key});
@@ -42,6 +42,7 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    //[phoneNumber, username, bigBoi]
     List viewContentRecievedInfo =
         ModalRoute.of(context)!.settings.arguments as List;
     return Scaffold(
@@ -72,6 +73,13 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                       arguments: [viewContentRecievedInfo, pickedFile]);
                 },
                 child: const Text("POST A VIDEO")),
+            TextButton(
+              onPressed: () async {
+                Navigator.pushReplacementNamed(context, '/viewContent',
+                    arguments: [viewContentRecievedInfo, "postContent"]);
+              },
+              child: Text("Return to view content"),
+            )
           ],
         ),
       ),

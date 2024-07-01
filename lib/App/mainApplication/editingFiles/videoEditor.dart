@@ -1,9 +1,8 @@
 import 'dart:io';
-import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_editor/video_editor.dart';
-import 'package:path_provider/path_provider.dart';
 //import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 //-------------------//
@@ -26,7 +25,7 @@ class _VideoEditorState extends State<VideoEditor> {
   late final VideoEditorController _controller = VideoEditorController.file(
     widget.file,
     minDuration: const Duration(seconds: 1),
-    maxDuration: const Duration(seconds: 15),
+    maxDuration: const Duration(seconds: 2000),
   );
 
   @override

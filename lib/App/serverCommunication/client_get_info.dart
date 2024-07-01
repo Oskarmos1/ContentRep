@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 import 'package:daily/backend/backend_classes/content.dart';
+import 'package:http/http.dart' as http;
 
 class ClientGetInfo {
   Future<bool?> checkServerStatus(url, phoneNumber) async {
@@ -49,19 +50,16 @@ class ClientGetInfo {
 
   Future<List> getMyCurrentInfo(url, phoneNumber) async {
     http.Response? information;
-    print("GETTING MY CURRENT INFO");
     try {
       information = await http.get(Uri.parse(
           "$url?phoneNumber=$phoneNumber&location=${"getMyCurrentInfo"}"));
     } catch (e) {
       return ["Can't get your information"];
     }
-    print("INFO: ${jsonDecode(information.body)}");
     return jsonDecode(information.body);
   }
 
   Future<List?> getContent(url, phoneNumber) async {
-    print("GETTING CONTENT");
     http.Response? information;
     try {
       information = await http.get(Uri.parse(
@@ -69,7 +67,6 @@ class ClientGetInfo {
     } catch (e) {
       return [];
     }
-    print("INFO: ${jsonDecode(information.body)}");
     return jsonDecode(information.body);
   }
 }

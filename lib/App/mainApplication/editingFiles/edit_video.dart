@@ -1,10 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:daily/App/mainApplication/editingFiles/videoEditor.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'dart:convert';
 import 'package:video_compress/video_compress.dart';
-import 'package:daily/App/mainApplication/editingFiles/videoEditor.dart';
-import 'dart:io';
 
 class EditVideo extends StatefulWidget {
   const EditVideo({super.key});
@@ -88,7 +89,7 @@ class _EditVideoState extends State<EditVideo> {
                       }
 
                       Navigator.pushReplacementNamed(context, '/viewContent',
-                          arguments: displayList);
+                          arguments: [viewContentRecievedInfo, "editVideo"]);
                     }
                   }
                 },
@@ -105,10 +106,3 @@ class _EditVideoState extends State<EditVideo> {
     );
   }
 }
-
-/*         
-
-
-
-
-*/

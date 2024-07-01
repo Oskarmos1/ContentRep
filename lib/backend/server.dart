@@ -1,9 +1,11 @@
-import 'dart:io';
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:daily/backend/backend_classes/content.dart';
-import 'backend_classes/server_post_functions.dart';
-import 'backend_classes/server_get_functions.dart';
+
 import 'backend_classes/return_value.dart';
+import 'backend_classes/server_get_functions.dart';
+import 'backend_classes/server_post_functions.dart';
 import 'backend_classes/user.dart';
 
 Map<String, User> info = {};
@@ -28,7 +30,6 @@ Future<void> handlePost(HttpRequest request) async {
   ServerPostFunctions sPF = ServerPostFunctions();
   var recieved = await utf8.decoder.bind(request).join();
   Map recieveInfo = jsonDecode(recieved);
-
   if (recieveInfo["Location"] == "UsernameN") {
     ReturnValue returns =
         sPF.newUsername(info, purgatory, recieveInfo, allContent);

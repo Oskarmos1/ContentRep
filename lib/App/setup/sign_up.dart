@@ -1,8 +1,8 @@
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class signUp extends StatefulWidget {
   const signUp({super.key});
@@ -17,8 +17,6 @@ class _signUpState extends State<signUp> {
   String? vId;
   String verificationCode = "";
   Future<bool> completePhoneVerification(String enteredCode) async {
-    print(
-        "I occured (2)________________________________________________________");
     try {
       // Create the PhoneAuthCredential using the verification ID and entered code
       PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -34,13 +32,11 @@ class _signUpState extends State<signUp> {
       // User is now authenticated
       User user = userCredential.user!;
       print("Authentication successful for user: ${user.uid}");
-      print("VALID_____________________________________________");
       // Code is valid
       return true;
     } catch (e) {
       // Handle authentication errors
       print("Error occurred during authentication: $e");
-      print("INVALID_____________________________________________");
       // Code is invalid or an error occurred during authentication
       return false;
     }

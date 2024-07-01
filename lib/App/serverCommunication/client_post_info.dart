@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:http/http.dart' as http;
 
 class ClientPostInfo {
   Future<bool> postNewUsername(url, phoneNumber, username) async {
     bool returning = true;
-
     try {
       await http
           .post(Uri.parse("http://192.168.0.19:400"),

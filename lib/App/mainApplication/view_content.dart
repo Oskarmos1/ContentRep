@@ -1,13 +1,15 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:typed_data';
-import '../../widget_classes/display_video_content_class.dart';
-import 'package:daily/widget_classes/display_image_content_class.dart';
-import 'package:daily/App/serverCommunication/client_post_info.dart';
+
 import 'package:daily/App/serverCommunication/client_get_info.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:daily/App/serverCommunication/client_post_info.dart';
 import 'package:daily/widget_classes/ad_state.dart';
+import 'package:daily/widget_classes/display_image_content_class.dart';
+import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../widget_classes/display_video_content_class.dart';
 
 class viewContent extends StatefulWidget {
   const viewContent({super.key});
@@ -26,7 +28,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   bool canGetInitialInfo = true;
   List? x;
   List bigBoi = [];
-  List displayList = [];
+  //List displayList = [];
   GlobalKey<_viewContentState> viewContentKey = GlobalKey<_viewContentState>();
   dynamic display = const Placeholder();
   List myInformation = [];
@@ -48,12 +50,9 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   }
 
   void updateAllVideoWidgetStates() {
-    print("IN UPDATE ALL WIDGET STATES ___________________");
     if (bigBoi.isNotEmpty) {
-      print("BIG BOI IS NOT EMPTY");
       for (int i = 0; i < bigBoi.length; i++) {
         if (bigBoi[i].recievedContent["file"]["Type"] == "VIDEO") {
-          print("I AM A VIDEO AND I AM GOING TO BE DISPOSED OF");
           bigBoi[i].disposeVideoWidget();
         }
       }
@@ -87,8 +86,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
             bigBoi.add(ImageWidget(recievedContent: x?[i]));
           } else if (type == "VIDEO") {
             try {
-              print("ADDED NEW OBJECT");
-
               bigBoi.add(VideoWidget(
                   recievedContent: x?[i],
                   updateOtherVideoWidgets: updateAllVideoWidgetStates));
@@ -96,13 +93,12 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
           } else {
             print("UNRECOGNISED FILE TYPE");
           }
-
           canGetNewInfo = true;
         }
       });
     } else {
       setState(() {
-        //bigBoi.add(Text("Looks Like you've reached the bottom."));
+        //bigBoi.add(Text("Looks like you've reached the bottom."));
       });
     }
   }
@@ -135,6 +131,25 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    //[[phoneNumber, username, bigBoi],"location"]
+    List savedData = ModalRoute.of(context)!.settings.arguments as List;
+    //coming not from username
+    if (savedData[1] != "username") {
+      setState(() {
+        //bigBoi = savedData[0][2];
+        print(savedData[0][2].length);
+        for (int i = 0; i < savedData[0][2].length; i++) {
+          if (savedData[0][2][i].runtimeType != AdWidget) {
+            try {
+              bigBoi.add(savedData[0][2][i]);
+            } catch (e) {}
+          } else {
+            print("UNRECOGNISED FILE TYPE");
+          }
+        }
+      });
+      savedData[1] = "username";
+    }
     if (canGetInitialInfo == true) {
       canBeExited = true;
       getInfo();
@@ -148,7 +163,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
               onPressed: () {
                 canBeExited = false;
                 Navigator.pushReplacementNamed(context, '/postContent',
-                    arguments: [phoneNumber, username, displayList]);
+                    arguments: [phoneNumber, username, bigBoi]);
               },
               child: const Text("POST SOME INFORMATION TO THE SERVER")),
           Container(
