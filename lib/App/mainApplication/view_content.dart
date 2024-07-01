@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:daily/App/mainApplication/post_content.dart';
 import 'package:daily/App/serverCommunication/client_get_info.dart';
 import 'package:daily/App/serverCommunication/client_post_info.dart';
 import 'package:daily/widget_classes/ad_state.dart';
@@ -23,12 +24,10 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   List<BannerAd> bannerAds = [];
   //BannerAd? myBannerAd;
   String? phoneNumber;
-  String? username;
   dynamic z;
   bool canGetInitialInfo = true;
   List? x;
   List bigBoi = [];
-  //List displayList = [];
   GlobalKey<_viewContentState> viewContentKey = GlobalKey<_viewContentState>();
   dynamic display = const Placeholder();
   List myInformation = [];
@@ -119,7 +118,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
       if (state != AppLifecycleState.resumed) {
         if (mounted) {
           Navigator.pushReplacementNamed(context, '/');
-          cPI.exitApp("http://192.168.0.19:400", phoneNumber, username);
+          cPI.exitApp("http://192.168.0.19:400", phoneNumber, myInformation[0]);
         }
       }
     }
@@ -132,24 +131,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     //[[phoneNumber, username, bigBoi],"location"]
-    List savedData = ModalRoute.of(context)!.settings.arguments as List;
-    //coming not from username
-    if (savedData[1] != "username") {
-      setState(() {
-        //bigBoi = savedData[0][2];
-        print(savedData[0][2].length);
-        for (int i = 0; i < savedData[0][2].length; i++) {
-          if (savedData[0][2][i].runtimeType != AdWidget) {
-            try {
-              bigBoi.add(savedData[0][2][i]);
-            } catch (e) {}
-          } else {
-            print("UNRECOGNISED FILE TYPE");
-          }
-        }
-      });
-      savedData[1] = "username";
-    }
     if (canGetInitialInfo == true) {
       canBeExited = true;
       getInfo();
@@ -162,8 +143,15 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
           TextButton(
               onPressed: () {
                 canBeExited = false;
-                Navigator.pushReplacementNamed(context, '/postContent',
-                    arguments: [phoneNumber, username, bigBoi]);
+                print("USERNAME IN VIEWCONTENT: ${myInformation[0]} ");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => postContent(
+                      username: myInformation[0],
+                    ),
+                  ),
+                );
               },
               child: const Text("POST SOME INFORMATION TO THE SERVER")),
           Container(

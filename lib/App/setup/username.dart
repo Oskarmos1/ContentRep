@@ -59,8 +59,7 @@ class _UsernameState extends State<Username> {
                     canGoToViewContent = await cPI.postNewUsername(
                         "http://192.168.0.19:400", phoneNumber, username);
                     if (canGoToViewContent == true) {
-                      Navigator.pushReplacementNamed(context, '/viewContent',
-                          arguments: [[], "username"]);
+                      Navigator.pushReplacementNamed(context, '/viewContent');
                     } else {
                       Navigator.pushReplacementNamed(context, '/noConnection',
                           arguments: "Failed to post info to server.");
@@ -82,8 +81,7 @@ class _UsernameState extends State<Username> {
                     canGoToViewContent = await cPI.postOldUsername(
                         "http://192.168.0.19:400", phoneNumber);
                     if (canGoToViewContent == true) {
-                      Navigator.pushReplacementNamed(context, '/viewContent',
-                          arguments: [[], "username"]);
+                      Navigator.pushReplacementNamed(context, '/viewContent');
                     } else {
                       Navigator.pushReplacementNamed(context, '/noConnection',
                           arguments:

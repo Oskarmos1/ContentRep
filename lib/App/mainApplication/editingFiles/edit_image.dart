@@ -47,7 +47,6 @@ class _EditImageState extends State<EditImage> {
     pickedFile = postContentRecievedInfo[1];
     phoneNumber = postContentRecievedInfo[0][0];
     username = postContentRecievedInfo[0][1];
-    displayList = postContentRecievedInfo[0][2];
     void trial() async {
       fileBytes = await pickedFile.readAsBytes();
       setState(() {
@@ -92,6 +91,8 @@ class _EditImageState extends State<EditImage> {
                   if (finalFileBytes == null) {
                     finalFileBytes = fileBytes;
                   }
+                  print("USERNAME IN EDITIMAGE: $username");
+                  print("");
                   String encodedImage =
                       await encodeXFileToBase64(finalFileBytes!);
 
@@ -104,10 +105,19 @@ class _EditImageState extends State<EditImage> {
                         "Category": "main"
                       }));
 
-                  Navigator.pushReplacementNamed(context, '/viewContent',
-                      arguments: [postContentRecievedInfo[0], "editImage"]);
+                  Navigator.pushReplacementNamed(
+                    context,
+                    '/viewContent',
+                  );
                 },
-                child: Text("PRESS ME TO POST THE IMAGE"))
+                child: Text("PRESS ME TO POST THE IMAGE")),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                  );
+                },
+                child: Text("Return to view content"))
           ],
         ),
       ),

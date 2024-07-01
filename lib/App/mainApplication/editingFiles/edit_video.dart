@@ -31,7 +31,6 @@ class _EditVideoState extends State<EditVideo> {
   late XFile pickedFile;
   String? phoneNumber;
   String? username;
-  List? displayList;
   double postButtonOpacity = 0;
   XFile? outputFile;
   @override
@@ -50,8 +49,6 @@ class _EditVideoState extends State<EditVideo> {
     pickedFile = viewContentRecievedInfo[1];
     phoneNumber = viewContentRecievedInfo[0][0];
     username = viewContentRecievedInfo[0][1];
-    displayList = viewContentRecievedInfo[0][2];
-
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -88,8 +85,10 @@ class _EditVideoState extends State<EditVideo> {
                             }));
                       }
 
-                      Navigator.pushReplacementNamed(context, '/viewContent',
-                          arguments: [viewContentRecievedInfo, "editVideo"]);
+                      Navigator.pushReplacementNamed(
+                        context,
+                        '/viewContent',
+                      );
                     }
                   }
                 },
@@ -99,7 +98,14 @@ class _EditVideoState extends State<EditVideo> {
             Opacity(
               opacity: waitingButtonOpacity,
               child: Text("PLEASE WAIT"),
-            )
+            ),
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(
+                    context,
+                  );
+                },
+                child: Text("Return to view content"))
           ],
         ),
       ),
