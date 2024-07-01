@@ -60,7 +60,6 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                   ImagePicker picker = ImagePicker();
                   XFile? pickedFile =
                       await picker.pickImage(source: ImageSource.gallery);
-
                   if (pickedFile != null) {
                     print(
                         "CURRENT USERNAME IN POSTCONTENT: ${widget.username}");

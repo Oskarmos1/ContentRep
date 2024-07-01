@@ -24,8 +24,8 @@ class _VideoEditorState extends State<VideoEditor> {
 
   late final VideoEditorController _controller = VideoEditorController.file(
     widget.file,
-    minDuration: const Duration(seconds: 1),
-    maxDuration: const Duration(seconds: 2000),
+    minDuration: const Duration(seconds: 0),
+    maxDuration: const Duration(seconds: 20000),
   );
 
   @override
@@ -290,7 +290,7 @@ class _VideoEditorState extends State<VideoEditor> {
                   context,
                   MaterialPageRoute<void>(
                     builder: (context) => Text(
-                        "I DON't WORK"), //CropPage(controller: _controller),
+                        "I DON'T WORK"), //CropPage(controller: _controller),
                   ),
                 ),
                 icon: const Icon(Icons.crop),
@@ -303,7 +303,6 @@ class _VideoEditorState extends State<VideoEditor> {
             ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    /*
                     final double startTrimPercent =
                         _controller.startTrim.inMilliseconds /
                             _controller.videoDuration.inMilliseconds;
@@ -312,7 +311,7 @@ class _VideoEditorState extends State<VideoEditor> {
                             _controller.videoDuration.inMilliseconds;
 
                     _controller.updateTrim(startTrimPercent, endTrimPercent);
-                    */
+
                     _controller.updateTrim(0.01, 0.02);
                   });
                   print(_controller.videoDuration);
@@ -341,6 +340,26 @@ class _VideoEditorState extends State<VideoEditor> {
         builder: (_, __) {
           final int duration = _controller.videoDuration.inSeconds;
           final double pos = _controller.trimPosition * duration;
+
+          // Enforce maximum duration of 15 seconds
+          final double maxDuration = 15.0;
+
+          // Calculate current start and end trim percentages
+          double startTrimPercent = (_controller.startTrim.inMilliseconds /
+                  _controller.videoDuration.inMilliseconds)
+              .toDouble();
+          double endTrimPercent = (_controller.endTrim.inMilliseconds /
+                  _controller.videoDuration.inMilliseconds)
+              .toDouble();
+
+          // Adjust start and end trim if they exceed the maximum duration
+          if (endTrimPercent - startTrimPercent > maxDuration) {
+            startTrimPercent = endTrimPercent - maxDuration;
+            if (startTrimPercent < 0) {
+              startTrimPercent = 0;
+            }
+            _controller.updateTrim(startTrimPercent, endTrimPercent);
+          }
 
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: height / 4),

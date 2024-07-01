@@ -29,6 +29,6 @@ void main() {
 //Must remember to have the posts saved when entering other screens in the application
 
 
-
+//git add .
 //git commit -m ""
 //git push -u origin main

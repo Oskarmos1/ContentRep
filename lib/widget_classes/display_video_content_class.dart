@@ -1,8 +1,9 @@
-import "package:flutter/material.dart";
+import 'dart:io';
+
 //import '../backend_classes/content.dart';
 //import '../backend_classes/comment.dart';
 import 'package:daily/App/mainApplication/view_content.dart';
-import 'dart:io';
+import "package:flutter/material.dart";
 import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {

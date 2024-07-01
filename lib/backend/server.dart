@@ -24,7 +24,7 @@ Map<String, List<Content>> allContent = {
   "STEM": [],
   "other": [],
 };
-
+//
 //Images are stored according to which category they belong to. However, the user can sort what type of images they want to see first for example: recommended, most recent, most discussed, most liked, most disliked.
 Future<void> handlePost(HttpRequest request) async {
   ServerPostFunctions sPF = ServerPostFunctions();
@@ -49,6 +49,8 @@ Future<void> handlePost(HttpRequest request) async {
         recieveInfo["Username"], DateTime.now(), [], 0, 0, 0, [], 0.0));
   } else if (recieveInfo["Location"] == "test") {
     for (int i = 0; i < 100; i++) {
+      print(recieveInfo["Username"]);
+      print(recieveInfo["Category"]);
       allContent[recieveInfo["Category"]]?.add(Content(recieveInfo["Post"],
           recieveInfo["Username"], DateTime.now(), [], i, i, i, [], i / 2));
     }
