@@ -61,8 +61,6 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                   XFile? pickedFile =
                       await picker.pickImage(source: ImageSource.gallery);
                   if (pickedFile != null) {
-                    print(
-                        "CURRENT USERNAME IN POSTCONTENT: ${widget.username}");
                     Navigator.pushReplacementNamed(context, '/editImage',
                         arguments: [
                           [phoneNumber, widget.username],

@@ -1,8 +1,9 @@
-import "package:flutter/material.dart";
+import 'dart:convert';
 //import '../backend_classes/content.dart';
 //import '../backend_classes/comment.dart';
 import 'dart:typed_data';
-import 'dart:convert';
+
+import "package:flutter/material.dart";
 
 class ImageWidget extends StatefulWidget {
   final Map recievedContent;
@@ -19,6 +20,7 @@ class _ImageWidgetState extends State<ImageWidget> {
     String type = widget.recievedContent["file"]["Type"];
 
     Uint8List bytes = base64.decode(widget.recievedContent["file"]["File"]);
+    print(bytes);
     display = Image.memory(bytes);
 
     String owner = widget.recievedContent["owner"];
@@ -32,7 +34,7 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: Column(
         children: <Widget>[
           Text(owner),
-          display,
+          Container(width: 200, height: 200, child: display),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
           const Text("COMMENTS NOT IMPLEMENTED YET"),
