@@ -7,44 +7,56 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:video_compress/video_compress.dart';
-import 'package:video_player/video_player.dart';
 
 class EditVideo extends StatefulWidget {
-  const EditVideo({Key? key}) : super(key: key);
+  const EditVideo({super.key});
 
   @override
   _EditVideoState createState() => _EditVideoState();
 }
 
 class _EditVideoState extends State<EditVideo> {
+  dynamic videoWidget = const Placeholder();
   XFile? pickedFile;
-  XFile? outputFile;
   String? phoneNumber;
   String? username;
   double postButtonOpacity = 0;
   double waitingButtonOpacity = 0;
-  VideoPlayerController? loadedVideoFileController;
+  bool started = true;
   @override
   Widget build(BuildContext context) {
     List postContentRecievedInfo =
         ModalRoute.of(context)!.settings.arguments as List;
-    pickedFile = postContentRecievedInfo[1];
+
     phoneNumber = postContentRecievedInfo[0][0];
     username = postContentRecievedInfo[0][1];
-
-    void editVideo() async {
-      pickedFile = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => VideoEditor(file: File(pickedFile!.path)),
-        ),
+    if (started == true) {
+      pickedFile = postContentRecievedInfo[1];
+      videoWidget = VideoWidget(
+        recievedContent: {
+          "file": {
+            "Type": "VIDEO",
+            "File": {"path": pickedFile!.path}
+          },
+          "owner": username,
+          "timeOfPost": DateTime.now().toString(),
+          "likes": 0,
+          "dislikes": 0,
+          "noOfComments": 0
+        },
+        updateOtherVideoWidgets: () {},
       );
-      setState(() {
-        postButtonOpacity = 1.0;
-      });
+
+      started = false;
     }
 
     Future<void> encodeXFileVideo(XFile xFile) async {
+      /*
+      VideoPlayerController x = VideoPlayerController.file(File(xFile.path));
+      await x.initialize();
+      print("DURATION BEFORE SENDING: ${x.value.duration.inSeconds}");
+      x.dispose();
+      */
       MediaInfo? returning = await VideoCompress.compressVideo(
         xFile.path,
         quality: VideoQuality.LowQuality,
@@ -74,25 +86,46 @@ class _EditVideoState extends State<EditVideo> {
         child: Column(
           children: <Widget>[
             TextButton(
-                onPressed: () {
-                  editVideo();
+                onPressed: () async {
+                  videoWidget.disposeVideoWidget();
+                  print("1st PICKED FILE: ${pickedFile!.path}");
+                  String originalPath = pickedFile!.path;
+                  if (pickedFile != null) {
+                    pickedFile = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            TrimmerView(File(pickedFile!.path)),
+                      ),
+                    );
+                  }
+
+                  if (pickedFile != null) {
+                    File trimmedFile = File(pickedFile!.path);
+                    trimmedFile = await trimmedFile.copy(originalPath);
+                    pickedFile = XFile(trimmedFile.path);
+                    print("2nd PICKED FILE: ${pickedFile!.path}");
+                    setState(() {
+                      postButtonOpacity = 1.0;
+                      videoWidget = VideoWidget(
+                        recievedContent: {
+                          "file": {
+                            "Type": "VIDEO",
+                            "File": {"path": pickedFile!.path}
+                          },
+                          "owner": username,
+                          "timeOfPost": DateTime.now().toString(),
+                          "likes": 20,
+                          "dislikes": 0,
+                          "noOfComments": 0
+                        },
+                        updateOtherVideoWidgets: () {},
+                      );
+                    });
+                  }
                 },
-                child: Text("Edit the video")),
-            //if (outputFile != null)
-            VideoWidget(
-              recievedContent: {
-                "file": {
-                  "Type": "VIDEO",
-                  "File": {"path": pickedFile!.path}
-                },
-                "owner": username,
-                "timeOfPost": DateTime.now().toString(),
-                "likes": 0,
-                "dislikes": 0,
-                "noOfComments": 0
-              },
-              updateOtherVideoWidgets: () {},
-            ),
+                child: const Text("Edit the video")),
+            videoWidget,
             Opacity(
               opacity: postButtonOpacity,
               child: ElevatedButton(
@@ -101,6 +134,7 @@ class _EditVideoState extends State<EditVideo> {
                     setState(() {
                       waitingButtonOpacity = 1.0;
                     });
+
                     encodeXFileVideo(pickedFile!);
                   }
                 },
@@ -124,3 +158,5 @@ class _EditVideoState extends State<EditVideo> {
     );
   }
 }
+//Standard video path: /data/user/0/com.example.daily/cache/197fc349-e916-4d95-89d5-223ac43be3a6/20240701_130520.mp4
+//Shortened video path: /data/user/0/com.example.daily/app_flutter/Trimmer/20240701_130520_trimmed:Jul4,2024-11:42:47.mp4

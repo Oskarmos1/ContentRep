@@ -89,7 +89,7 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                   context,
                 );
               },
-              child: Text("Return to view content"),
+              child: const Text("Return to view content"),
             )
           ],
         ),

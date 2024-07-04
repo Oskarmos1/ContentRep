@@ -56,7 +56,7 @@ class _EditImageState extends State<EditImage> {
     return SafeArea(
       child: Scaffold(
         body: fileBytes == null
-            ? Center(child: CircularProgressIndicator())
+            ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: <Widget>[
                   ElevatedButton(

@@ -34,7 +34,7 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: Column(
         children: <Widget>[
           Text(owner),
-          Container(width: 200, height: 200, child: display),
+          SizedBox(width: 200, height: 200, child: display),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
           const Text("COMMENTS NOT IMPLEMENTED YET"),
