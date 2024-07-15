@@ -29,7 +29,7 @@ class _VideoWidgetState extends State<VideoWidget> {
   bool canBeCleared = true;
   bool disposedOf = true;
   VideoPlayerController? loadedVideoFileController;
-  dynamic display = const Placeholder();
+  dynamic display = Text("MY NICKNAME IS");
   dynamic scroller = const Placeholder();
   late viewContent myView;
 
@@ -89,54 +89,32 @@ class _VideoWidgetState extends State<VideoWidget> {
       child: Column(
         children: <Widget>[
           Text(owner),
-          SizedBox(
-            height: 250,
-            width: 250,
-            child: Row(
-              children: <Widget>[
-                SizedBox(
-                  height: 150,
-                  width: 150,
-                  child: display,
-                ),
-                TextButton(
-                    onPressed: () {
-                      canBeCleared = false;
-                      killAll();
-                      setState(() {
-                        canBeCleared = true;
-                      });
-                      if (disposedOf == true) {
-                        loadContent();
-                      }
+          GestureDetector(
+            onTap: () {
+              print("I was tapped");
+              canBeCleared = false;
+              killAll();
+              setState(() {
+                canBeCleared = true;
+              });
+              if (disposedOf == true) {
+                loadContent();
+              }
 
-                      if (isPlaying == false) {
-                        isPlaying = true;
-                        loadedVideoFileController!.play();
-                      } else {
-                        isPlaying = false;
-                        loadedVideoFileController!.pause();
-                      }
-                    },
-                    child: Text(
-                      "ChangeVideoState:$isPlaying",
-                      style: const TextStyle(fontSize: 6),
-                    ))
-              ],
+              if (isPlaying == false) {
+                isPlaying = true;
+                loadedVideoFileController!.play();
+              } else {
+                isPlaying = false;
+                loadedVideoFileController!.pause();
+              }
+            },
+            child: SizedBox(
+              width: 100,
+              height: 100,
+              child: display, // Your video widget
             ),
           ),
-          /*
-          SizedBox(
-            width: 200, // or a specific width like 200.0
-            child: Opacity(
-              child: VideoProgressIndicator(
-                loadedVideoFileController!,
-                allowScrubbing: true,
-              ),
-              opacity: 1.0,
-            ),
-          ),
-          */
           SizedBox(
             height: 20,
             width: 200,
@@ -147,7 +125,7 @@ class _VideoWidgetState extends State<VideoWidget> {
           const Text("COMMENTS NOT IMPLEMENTED YET"),
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
-          Text("Number of Comments: $noOfComments")
+          Text("Number of Comments: $noOfComments"),
         ],
       ),
     );
