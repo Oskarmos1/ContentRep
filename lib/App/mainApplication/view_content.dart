@@ -43,8 +43,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
     final prefs = await SharedPreferences.getInstance();
     phoneNumber = prefs.getString('phoneNumber');
 
-    myInformation =
-        await cGI.getMyCurrentInfo("http://192.168.0.19:400", phoneNumber);
+    myInformation = await cGI.getMyCurrentInfo(phoneNumber);
     setState(() {});
   }
 
@@ -69,7 +68,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   }
 
   Future<void> getInfo() async {
-    x = await cGI.getContent("http://192.168.0.19:400", phoneNumber);
+    x = await cGI.getContent(phoneNumber);
     bannerAds.add(BannerAd(
         size: AdSize.fullBanner,
         adUnitId: AdMobService.bannerAdUnitId!,
@@ -118,7 +117,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
       if (state != AppLifecycleState.resumed) {
         if (mounted) {
           Navigator.pushReplacementNamed(context, '/');
-          cPI.exitApp("http://192.168.0.19:400", phoneNumber, myInformation[0]);
+          cPI.exitApp(phoneNumber, myInformation[0]);
         }
       }
     }

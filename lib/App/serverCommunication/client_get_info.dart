@@ -5,7 +5,8 @@ import 'package:daily/backend/backend_classes/content.dart';
 import 'package:http/http.dart' as http;
 
 class ClientGetInfo {
-  Future<bool?> checkServerStatus(url, phoneNumber) async {
+  String url = "http://192.168.0.30:400";
+  Future<bool?> checkServerStatus(phoneNumber) async {
     try {
       http.Response? information = await http
           .get(Uri.parse(
@@ -19,7 +20,7 @@ class ClientGetInfo {
     }
   }
 
-  Future<List<Content?>> loadingBaseContent(url, phoneNumber) async {
+  Future<List<Content?>> loadingBaseContent(phoneNumber) async {
     late List<Content?> returnContent;
     try {
       http.Response? information = await http
@@ -34,7 +35,7 @@ class ClientGetInfo {
     return returnContent;
   }
 
-  Future<bool> canGetOldAccount(url, phoneNumber) async {
+  Future<bool> canGetOldAccount(phoneNumber) async {
     late bool canContinue;
     try {
       http.Response? information = await http
@@ -48,7 +49,7 @@ class ClientGetInfo {
     return canContinue;
   }
 
-  Future<List> getMyCurrentInfo(url, phoneNumber) async {
+  Future<List> getMyCurrentInfo(phoneNumber) async {
     http.Response? information;
     try {
       information = await http.get(Uri.parse(
@@ -59,11 +60,11 @@ class ClientGetInfo {
     return jsonDecode(information.body);
   }
 
-  Future<List?> getContent(url, phoneNumber) async {
+  Future<List?> getContent(phoneNumber) async {
     http.Response? information;
     try {
-      information = await http.get(Uri.parse(
-          "http://192.168.0.19:400?phoneNumber=$phoneNumber&location=${"getContent"}"));
+      information = await http.get(
+          Uri.parse("$url?phoneNumber=$phoneNumber&location=${"getContent"}"));
     } catch (e) {
       return [];
     }

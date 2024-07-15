@@ -1,6 +1,6 @@
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 import 'package:daily/App/serverCommunication/client_get_info.dart';
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class loading extends StatefulWidget {
   @override
@@ -28,8 +28,7 @@ class _loadingState extends State<loading> {
     if (phoneNumber == null) {
       Navigator.pushReplacementNamed(context, '/signUp');
     } else {
-      direction =
-          await cGI.checkServerStatus("http://192.168.0.19:400", phoneNumber);
+      direction = await cGI.checkServerStatus(phoneNumber);
       if (direction == true) {
         Navigator.pushReplacementNamed(context, '/userName');
       } else {

@@ -52,12 +52,11 @@ class _UsernameState extends State<Username> {
           TextButton(
               child: Text("Sign up as: $username"),
               onPressed: () async {
-                isActive = await cGI.checkServerStatus(
-                    "http://192.168.0.19:400", phoneNumber);
+                isActive = await cGI.checkServerStatus(phoneNumber);
                 if (isActive == true) {
                   if (username != null) {
-                    canGoToViewContent = await cPI.postNewUsername(
-                        "http://192.168.0.19:400", phoneNumber, username);
+                    canGoToViewContent =
+                        await cPI.postNewUsername(phoneNumber, username);
                     if (canGoToViewContent == true) {
                       Navigator.pushReplacementNamed(context, '/viewContent');
                     } else {
@@ -72,14 +71,11 @@ class _UsernameState extends State<Username> {
               }),
           TextButton(
               onPressed: () async {
-                isActive = await cGI.checkServerStatus(
-                    "http://192.168.0.19:400", phoneNumber);
+                isActive = await cGI.checkServerStatus(phoneNumber);
                 if (isActive == true) {
-                  canContinue = await cGI.canGetOldAccount(
-                      "http://192.168.0.19:400", phoneNumber);
+                  canContinue = await cGI.canGetOldAccount(phoneNumber);
                   if (canContinue == true) {
-                    canGoToViewContent = await cPI.postOldUsername(
-                        "http://192.168.0.19:400", phoneNumber);
+                    canGoToViewContent = await cPI.postOldUsername(phoneNumber);
                     if (canGoToViewContent == true) {
                       Navigator.pushReplacementNamed(context, '/viewContent');
                     } else {

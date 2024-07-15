@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:daily/App/mainApplication/editingFiles/videoEditor.dart';
+import 'package:daily/App/serverCommunication/client_post_info.dart';
 import 'package:daily/widget_classes/display_video_content_class.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:video_compress/video_compress.dart';
 
@@ -23,6 +22,7 @@ class _EditVideoState extends State<EditVideo> {
   double postButtonOpacity = 0;
   double waitingButtonOpacity = 0;
   bool started = true;
+  ClientPostInfo cPI = ClientPostInfo();
   @override
   Widget build(BuildContext context) {
     List postContentRecievedInfo =
@@ -66,6 +66,7 @@ class _EditVideoState extends State<EditVideo> {
       );
 
       if (returning != null) {
+        /*
         await http.post(
           Uri.parse("http://192.168.0.19:400"),
           body: jsonEncode({
@@ -76,6 +77,9 @@ class _EditVideoState extends State<EditVideo> {
             "Category": "main"
           }),
         );
+        */
+        await cPI.postContent(
+            phoneNumber, username, returning.toJson(), "VIDEO");
       }
 
       Navigator.pushReplacementNamed(context, '/viewContent');

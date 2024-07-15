@@ -41,7 +41,7 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
       if (state != AppLifecycleState.resumed) {
         if (mounted) {
           Navigator.pushReplacementNamed(context, '/');
-          cPI.exitApp("http://192.168.0.19:400", phoneNumber, widget.username);
+          cPI.exitApp(phoneNumber, widget.username);
         }
       }
     }

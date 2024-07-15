@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:daily/App/serverCommunication/client_post_info.dart';
 import 'package:daily/widget_classes/display_image_content_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_editor_plus/image_editor_plus.dart';
 
 class EditImage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _EditImageState extends State<EditImage> {
   String? phoneNumber;
   String? username;
   Uint8List? fileBytes;
-
+  ClientPostInfo cPI = ClientPostInfo();
   @override
   Widget build(BuildContext context) {
     List postContentRecievedInfo =
@@ -95,7 +95,7 @@ class _EditImageState extends State<EditImage> {
                     onPressed: () async {
                       String encodedImage =
                           await encodeXFileToBase64(fileBytes!);
-
+                      /*
                       await http.post(Uri.parse("http://192.168.0.19:400"),
                           body: jsonEncode({
                             "PhoneNumber": phoneNumber,
@@ -104,7 +104,9 @@ class _EditImageState extends State<EditImage> {
                             "Post": {"File": encodedImage, "Type": "IMAGE"},
                             "Category": "main"
                           }));
-
+                          */
+                      await cPI.postContent(
+                          phoneNumber, username, encodedImage, "IMAGE");
                       Navigator.pushReplacementNamed(
                         context,
                         '/viewContent',
