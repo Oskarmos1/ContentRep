@@ -30,19 +30,19 @@ class _VideoWidgetState extends State<VideoWidget> {
   bool disposedOf = true;
   VideoPlayerController? loadedVideoFileController;
   dynamic display = const Placeholder();
+  dynamic scroller = const Placeholder();
   late viewContent myView;
 
   void disposeOfThisWidget() {
-    if (loadedVideoFileController != null) {
-      if (loadedVideoFileController?.value.isInitialized == true) {
-        if (canBeCleared == true) {
-          setState(() {
-            isPlaying = false;
-            disposedOf = true;
-            loadedVideoFileController?.dispose();
-            display = const Placeholder();
-          });
-        }
+    if (loadedVideoFileController?.value.isInitialized == true) {
+      if (canBeCleared == true) {
+        setState(() {
+          display = const Placeholder();
+          scroller = const Placeholder();
+          isPlaying = false;
+          disposedOf = true;
+          loadedVideoFileController?.dispose();
+        });
       }
     }
   }
@@ -62,6 +62,16 @@ class _VideoWidgetState extends State<VideoWidget> {
           });
         loadedVideoFileController?.initialize();
         display = VideoPlayer(loadedVideoFileController!);
+        scroller = SizedBox(
+          width: 200, // or a specific width like 200.0
+          child: Opacity(
+            child: VideoProgressIndicator(
+              loadedVideoFileController!,
+              allowScrubbing: true,
+            ),
+            opacity: 1.0,
+          ),
+        );
       });
     }
 
@@ -114,6 +124,23 @@ class _VideoWidgetState extends State<VideoWidget> {
                     ))
               ],
             ),
+          ),
+          /*
+          SizedBox(
+            width: 200, // or a specific width like 200.0
+            child: Opacity(
+              child: VideoProgressIndicator(
+                loadedVideoFileController!,
+                allowScrubbing: true,
+              ),
+              opacity: 1.0,
+            ),
+          ),
+          */
+          SizedBox(
+            height: 20,
+            width: 200,
+            child: scroller,
           ),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
