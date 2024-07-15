@@ -17,7 +17,7 @@ class EditVideo extends StatefulWidget {
 
 class _EditVideoState extends State<EditVideo> {
   dynamic videoWidget = const Placeholder();
-  XFile? pickedFile;
+  late XFile pickedFile;
   String? phoneNumber;
   String? username;
   double postButtonOpacity = 0;
@@ -36,7 +36,7 @@ class _EditVideoState extends State<EditVideo> {
         recievedContent: {
           "file": {
             "Type": "VIDEO",
-            "File": {"path": pickedFile!.path}
+            "File": {"path": pickedFile.path}
           },
           "owner": username,
           "timeOfPost": DateTime.now().toString(),
@@ -88,30 +88,30 @@ class _EditVideoState extends State<EditVideo> {
             TextButton(
                 onPressed: () async {
                   videoWidget.disposeVideoWidget();
-                  print("1st PICKED FILE: ${pickedFile!.path}");
-                  String originalPath = pickedFile!.path;
-                  if (pickedFile != null) {
-                    pickedFile = await Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            TrimmerView(File(pickedFile!.path)),
-                      ),
-                    );
-                  }
+                  String originalPath = pickedFile.path;
+                  XFile? x = null;
 
-                  if (pickedFile != null) {
-                    File trimmedFile = File(pickedFile!.path);
+                  x = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TrimmerView(File(pickedFile.path)),
+                    ),
+                  );
+                  print("VALUE OF X: $x");
+
+                  if (x != null) {
+                    pickedFile = x;
+
+                    File trimmedFile = File(pickedFile.path);
                     trimmedFile = await trimmedFile.copy(originalPath);
                     pickedFile = XFile(trimmedFile.path);
-                    print("2nd PICKED FILE: ${pickedFile!.path}");
                     setState(() {
                       postButtonOpacity = 1.0;
                       videoWidget = VideoWidget(
                         recievedContent: {
                           "file": {
                             "Type": "VIDEO",
-                            "File": {"path": pickedFile!.path}
+                            "File": {"path": pickedFile.path}
                           },
                           "owner": username,
                           "timeOfPost": DateTime.now().toString(),
@@ -135,7 +135,7 @@ class _EditVideoState extends State<EditVideo> {
                       waitingButtonOpacity = 1.0;
                     });
 
-                    encodeXFileVideo(pickedFile!);
+                    encodeXFileVideo(pickedFile);
                   }
                 },
                 child: const Text("POST VIDEO"),
