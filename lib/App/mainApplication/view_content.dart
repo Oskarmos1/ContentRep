@@ -42,7 +42,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   Future<void> trial() async {
     final prefs = await SharedPreferences.getInstance();
     phoneNumber = prefs.getString('phoneNumber');
-
     myInformation = await cGI.getMyCurrentInfo(phoneNumber);
     setState(() {});
   }
@@ -117,6 +116,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
       if (state != AppLifecycleState.resumed) {
         if (mounted) {
           Navigator.pushReplacementNamed(context, '/');
+          updateAllVideoWidgetStates();
           cPI.exitApp(phoneNumber, myInformation[0]);
         }
       }
@@ -143,6 +143,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
               onPressed: () {
                 canBeExited = false;
                 print("USERNAME IN VIEWCONTENT: ${myInformation[0]} ");
+                updateAllVideoWidgetStates();
                 Navigator.push(
                   context,
                   MaterialPageRoute(

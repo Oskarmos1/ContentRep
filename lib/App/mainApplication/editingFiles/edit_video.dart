@@ -51,12 +51,6 @@ class _EditVideoState extends State<EditVideo> {
     }
 
     Future<void> encodeXFileVideo(XFile xFile) async {
-      /*
-      VideoPlayerController x = VideoPlayerController.file(File(xFile.path));
-      await x.initialize();
-      print("DURATION BEFORE SENDING: ${x.value.duration.inSeconds}");
-      x.dispose();
-      */
       MediaInfo? returning = await VideoCompress.compressVideo(
         xFile.path,
         quality: VideoQuality.LowQuality,
@@ -66,22 +60,10 @@ class _EditVideoState extends State<EditVideo> {
       );
 
       if (returning != null) {
-        /*
-        await http.post(
-          Uri.parse("http://192.168.0.19:400"),
-          body: jsonEncode({
-            "PhoneNumber": phoneNumber,
-            "Username": username,
-            "Location": "test",
-            "Post": {"File": returning.toJson(), "Type": "VIDEO"},
-            "Category": "main"
-          }),
-        );
-        */
         await cPI.postContent(
             phoneNumber, username, returning.toJson(), "VIDEO");
       }
-
+      videoWidget.disposeVideoWidget();
       Navigator.pushReplacementNamed(context, '/viewContent');
     }
 
@@ -91,10 +73,9 @@ class _EditVideoState extends State<EditVideo> {
           children: <Widget>[
             TextButton(
                 onPressed: () async {
-                  videoWidget.disposeVideoWidget();
                   String originalPath = pickedFile.path;
                   XFile? x = null;
-
+                  videoWidget.disposeVideoWidget();
                   x = await Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -152,6 +133,7 @@ class _EditVideoState extends State<EditVideo> {
             ),
             TextButton(
               onPressed: () {
+                videoWidget.disposeVideoWidget();
                 Navigator.pop(context);
               },
               child: const Text("CANCEL"),

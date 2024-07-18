@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:daily/App/mainApplication/view_content.dart';
 import "package:flutter/material.dart";
 import 'package:video_player/video_player.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class VideoWidget extends StatefulWidget {
   final Map recievedContent;
@@ -25,23 +26,50 @@ class VideoWidget extends StatefulWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
+  Duration? savedDuration;
+  Image? savedImage;
+  // effectively I want to save the image and the duration for when the videoWidget is disposed of
   bool isPlaying = false;
   bool canBeCleared = true;
   bool disposedOf = true;
   VideoPlayerController? loadedVideoFileController;
-  dynamic display = Text("MY NICKNAME IS");
+  dynamic display = Placeholder();
   dynamic scroller = const Placeholder();
+  Image? thumbnail;
   late viewContent myView;
+  double scrollerOpacity = 0.0;
+
+  void initState() {
+    super.initState();
+    makeThumbnail(0);
+  }
+
+  void makeThumbnail(int ms) async {
+    final fileName = await VideoThumbnail.thumbnailFile(
+      video: widget.recievedContent["file"]["File"]["path"],
+      imageFormat: ImageFormat.PNG,
+      maxHeight:
+          100, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
+      quality: 75,
+      timeMs: ms,
+    );
+    File file = File(fileName!);
+    thumbnail = Image.file(file);
+    display = thumbnail;
+    setState(() {});
+  }
 
   void disposeOfThisWidget() {
     if (loadedVideoFileController?.value.isInitialized == true) {
       if (canBeCleared == true) {
         setState(() {
-          display = const Placeholder();
+          //makeThumbnail(0);
+          display = thumbnail;
           scroller = const Placeholder();
           isPlaying = false;
           disposedOf = true;
           loadedVideoFileController?.dispose();
+          scrollerOpacity = 0.0;
         });
       }
     }
@@ -52,6 +80,7 @@ class _VideoWidgetState extends State<VideoWidget> {
   Widget build(BuildContext context) {
     void loadContent() {
       setState(() {
+        scrollerOpacity = 1.0;
         disposedOf = false;
         loadedVideoFileController = VideoPlayerController.file(
             File(widget.recievedContent["file"]["File"]["path"]))
@@ -60,6 +89,7 @@ class _VideoWidgetState extends State<VideoWidget> {
               isPlaying = loadedVideoFileController!.value.isPlaying;
             }
           });
+
         loadedVideoFileController?.initialize();
         display = VideoPlayer(loadedVideoFileController!);
         scroller = SizedBox(
@@ -115,10 +145,13 @@ class _VideoWidgetState extends State<VideoWidget> {
               child: display, // Your video widget
             ),
           ),
-          SizedBox(
-            height: 20,
-            width: 200,
-            child: scroller,
+          Opacity(
+            opacity: scrollerOpacity,
+            child: SizedBox(
+              height: 20,
+              width: 200,
+              child: scroller,
+            ),
           ),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),

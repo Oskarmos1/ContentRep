@@ -52,10 +52,9 @@ dependencies:
   path_provider: ^2.0.15
   video_trimmer: any
   video_editor: any
-
   image_editor_plus: any
   #flutter_ffmpeg: any
-
+  video_thumbnail: any
 dependency_overrides:
   extended_image: ^8.2.0  # Override to use this specific version
   screenshot: ^3.0.0  # Override to use this specific version
