@@ -24,6 +24,8 @@ class _ImageWidgetState extends State<ImageWidget> {
     display = Image.memory(bytes);
 
     String owner = widget.recievedContent["owner"];
+    String title = widget.recievedContent["title"];
+    String description = widget.recievedContent["description"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     //List<Comment> comments = widget.recievedContent["comments"];
     int likes = widget.recievedContent["likes"];
@@ -34,7 +36,9 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: Column(
         children: <Widget>[
           Text(owner),
+          Text("TITLE: $title"),
           SizedBox(width: 200, height: 200, child: display),
+          Text("DESCRIPTION: $description"),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
           const Text("COMMENTS NOT IMPLEMENTED YET"),

@@ -109,6 +109,8 @@ class _VideoWidgetState extends State<VideoWidget> {
 
     String type = widget.recievedContent["file"]["Type"];
     String owner = widget.recievedContent["owner"];
+    String title = widget.recievedContent["title"];
+    String description = widget.recievedContent["description"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     //List<Comment> comments = widget.recievedContent["comments"];
     int likes = widget.recievedContent["likes"];
@@ -119,6 +121,7 @@ class _VideoWidgetState extends State<VideoWidget> {
       child: Column(
         children: <Widget>[
           Text(owner),
+          Text("TITLE: $title"),
           GestureDetector(
             onTap: () {
               print("I was tapped");
@@ -145,6 +148,7 @@ class _VideoWidgetState extends State<VideoWidget> {
               child: display, // Your video widget
             ),
           ),
+          Text("DESCRIPTION: $description"),
           Opacity(
             opacity: scrollerOpacity,
             child: SizedBox(

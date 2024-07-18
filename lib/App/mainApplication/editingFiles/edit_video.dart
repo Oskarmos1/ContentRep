@@ -15,6 +15,8 @@ class EditVideo extends StatefulWidget {
 }
 
 class _EditVideoState extends State<EditVideo> {
+  String title = "";
+  String description = "";
   dynamic videoWidget = const Placeholder();
   late XFile pickedFile;
   String? phoneNumber;
@@ -25,6 +27,27 @@ class _EditVideoState extends State<EditVideo> {
   ClientPostInfo cPI = ClientPostInfo();
   @override
   Widget build(BuildContext context) {
+    void updateVideoWidget() {
+      setState(() {
+        videoWidget = VideoWidget(
+          recievedContent: {
+            "file": {
+              "Type": "VIDEO",
+              "File": {"path": pickedFile.path}
+            },
+            "owner": username,
+            "title": title,
+            "description": description,
+            "timeOfPost": DateTime.now().toString(),
+            "likes": 0,
+            "dislikes": 0,
+            "noOfComments": 0
+          },
+          updateOtherVideoWidgets: () {},
+        );
+      });
+    }
+
     List postContentRecievedInfo =
         ModalRoute.of(context)!.settings.arguments as List;
 
@@ -32,21 +55,7 @@ class _EditVideoState extends State<EditVideo> {
     username = postContentRecievedInfo[0][1];
     if (started == true) {
       pickedFile = postContentRecievedInfo[1];
-      videoWidget = VideoWidget(
-        recievedContent: {
-          "file": {
-            "Type": "VIDEO",
-            "File": {"path": pickedFile.path}
-          },
-          "owner": username,
-          "timeOfPost": DateTime.now().toString(),
-          "likes": 0,
-          "dislikes": 0,
-          "noOfComments": 0
-        },
-        updateOtherVideoWidgets: () {},
-      );
-
+      updateVideoWidget();
       started = false;
     }
 
@@ -60,8 +69,8 @@ class _EditVideoState extends State<EditVideo> {
       );
 
       if (returning != null) {
-        await cPI.postContent(
-            phoneNumber, username, returning.toJson(), "VIDEO");
+        await cPI.postContent(phoneNumber, username, title, description,
+            returning.toJson(), "VIDEO");
       }
       videoWidget.disposeVideoWidget();
       Navigator.pushReplacementNamed(context, '/viewContent');
@@ -71,6 +80,24 @@ class _EditVideoState extends State<EditVideo> {
       body: SafeArea(
         child: Column(
           children: <Widget>[
+            Text("TITLE:"),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  title = value;
+                  updateVideoWidget();
+                });
+              },
+            ),
+            Text("DESCRIPTION:"),
+            TextField(
+              onChanged: (value) {
+                setState(() {
+                  description = value;
+                  updateVideoWidget();
+                });
+              },
+            ),
             TextButton(
                 onPressed: () async {
                   String originalPath = pickedFile.path;
@@ -92,20 +119,7 @@ class _EditVideoState extends State<EditVideo> {
                     pickedFile = XFile(trimmedFile.path);
                     setState(() {
                       postButtonOpacity = 1.0;
-                      videoWidget = VideoWidget(
-                        recievedContent: {
-                          "file": {
-                            "Type": "VIDEO",
-                            "File": {"path": pickedFile.path}
-                          },
-                          "owner": username,
-                          "timeOfPost": DateTime.now().toString(),
-                          "likes": 20,
-                          "dislikes": 0,
-                          "noOfComments": 0
-                        },
-                        updateOtherVideoWidgets: () {},
-                      );
+                      updateVideoWidget();
                     });
                   }
                 },
@@ -144,5 +158,3 @@ class _EditVideoState extends State<EditVideo> {
     );
   }
 }
-//Standard video path: /data/user/0/com.example.daily/cache/197fc349-e916-4d95-89d5-223ac43be3a6/20240701_130520.mp4
-//Shortened video path: /data/user/0/com.example.daily/app_flutter/Trimmer/20240701_130520_trimmed:Jul4,2024-11:42:47.mp4

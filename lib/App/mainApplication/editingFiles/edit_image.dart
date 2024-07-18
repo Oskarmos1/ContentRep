@@ -29,6 +29,8 @@ class _EditImageState extends State<EditImage> {
     return base64Image;
   }
 
+  String title = "";
+  String description = "";
   bool started = true;
   late XFile pickedFile;
   String? phoneNumber;
@@ -59,6 +61,22 @@ class _EditImageState extends State<EditImage> {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: <Widget>[
+                  Text("TITLE:"),
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        title = value;
+                      });
+                    },
+                  ),
+                  Text("DESCRIPTION:"),
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        description = value;
+                      });
+                    },
+                  ),
                   ElevatedButton(
                     child: const Text("ImageEditor"),
                     onPressed: () async {
@@ -85,6 +103,8 @@ class _EditImageState extends State<EditImage> {
                         "File": base64Encode(fileBytes!)
                       },
                       "owner": username,
+                      "title": title,
+                      "description": description,
                       "timeOfPost": DateTime.now().toString(),
                       "likes": 0,
                       "dislikes": 0,
@@ -105,8 +125,8 @@ class _EditImageState extends State<EditImage> {
                             "Category": "main"
                           }));
                           */
-                      await cPI.postContent(
-                          phoneNumber, username, encodedImage, "IMAGE");
+                      await cPI.postContent(phoneNumber, username, title,
+                          description, encodedImage, "IMAGE");
                       Navigator.pushReplacementNamed(
                         context,
                         '/viewContent',

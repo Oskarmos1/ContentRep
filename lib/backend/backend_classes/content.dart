@@ -1,9 +1,12 @@
-import 'comment.dart';
 import 'dart:convert';
+
+import 'comment.dart';
 
 class Content {
   Map file;
   String owner;
+  String title;
+  String description;
   DateTime timeOfPost;
   List<Comment> comments;
   int likes;
@@ -11,12 +14,24 @@ class Content {
   int noOfComments;
   List<String> seenBy;
   double contentScore;
-  Content(this.file, this.owner, this.timeOfPost, this.comments, this.likes,
-      this.dislikes, this.noOfComments, this.seenBy, this.contentScore);
+  Content(
+      this.file,
+      this.owner,
+      this.title,
+      this.description,
+      this.timeOfPost,
+      this.comments,
+      this.likes,
+      this.dislikes,
+      this.noOfComments,
+      this.seenBy,
+      this.contentScore);
 
   Map<String, dynamic> toJson() {
     return {
       'file': file,
+      'title': title,
+      'description': description,
       'owner': owner,
       'timeOfPost': timeOfPost.toIso8601String(),
       'comments': comments,
@@ -33,6 +48,8 @@ class Content {
     return Content(
         json['file'],
         json['owner'],
+        json['title'],
+        json['description'],
         json['timeOfPost'],
         json['comments'],
         json['likes'],

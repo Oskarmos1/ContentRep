@@ -45,12 +45,32 @@ Future<void> handlePost(HttpRequest request) async {
     info = returns.info;
     purgatory = returns.purgatory;
   } else if (recieveInfo["Location"] == "newPost") {
-    allContent[recieveInfo["Category"]]?.add(Content(recieveInfo["Post"],
-        recieveInfo["Username"], DateTime.now(), [], 0, 0, 0, [], 0.0));
+    allContent[recieveInfo["Category"]]?.add(Content(
+        recieveInfo["Post"],
+        recieveInfo["Username"],
+        recieveInfo["Title"],
+        recieveInfo["Description"],
+        DateTime.now(),
+        [],
+        0,
+        0,
+        0,
+        [],
+        0.0));
   } else if (recieveInfo["Location"] == "test") {
     for (int i = 0; i < 100; i++) {
-      allContent[recieveInfo["Category"]]?.add(Content(recieveInfo["Post"],
-          recieveInfo["Username"], DateTime.now(), [], i, i, i, [], i / 2));
+      allContent[recieveInfo["Category"]]?.add(Content(
+          recieveInfo["Post"],
+          recieveInfo["Username"],
+          recieveInfo["Title"],
+          recieveInfo["Description"],
+          DateTime.now(),
+          [],
+          i,
+          i,
+          i,
+          [],
+          i / 2));
     }
   }
 

@@ -34,13 +34,16 @@ class ClientPostInfo {
     return returning;
   }
 
-  Future<void> postContent(phoneNumber, username, file, fileType) async {
+  Future<void> postContent(
+      phoneNumber, username, title, description, file, fileType) async {
     await http.post(Uri.parse(url),
         body: jsonEncode({
           "PhoneNumber": phoneNumber,
           "Username": username,
-          "Location": "test",
-          "Post": {"File": file, "Type": fileType}, //"IMAGE"},
+          "Title": title,
+          "Description": description,
+          "Location": "newPost",
+          "Post": {"File": file, "Type": fileType},
           "Category": "main"
         }));
   }
