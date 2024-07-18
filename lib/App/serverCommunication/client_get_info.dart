@@ -61,6 +61,7 @@ class ClientGetInfo {
   }
 
   Future<List?> getContent(phoneNumber) async {
+    print("We got the phone number:$phoneNumber");
     http.Response? information;
     try {
       information = await http.get(

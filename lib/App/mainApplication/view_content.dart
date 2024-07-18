@@ -41,8 +41,9 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   ClientGetInfo cGI = ClientGetInfo();
   Future<void> trial() async {
     final prefs = await SharedPreferences.getInstance();
-    phoneNumber = prefs.getString('phoneNumber');
+    phoneNumber = await prefs.getString('phoneNumber')!;
     myInformation = await cGI.getMyCurrentInfo(phoneNumber);
+
     setState(() {});
   }
 
@@ -59,44 +60,53 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    trial();
+
     MobileAds.instance.initialize();
     _innerNestedScrollController = ScrollController();
     _outerNestedScrollController = ScrollController();
     WidgetsBinding.instance.addObserver(this);
+    trial();
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (bigBoi.isEmpty == true && canGetInitialInfo == true) {
+        canBeExited = true;
+        print("GET INFO IS ABOUT TO OCCUR: $phoneNumber");
+        getInfo(phoneNumber);
+        canGetInitialInfo = false;
+      }
+    });
   }
 
-  Future<void> getInfo() async {
-    x = await cGI.getContent(phoneNumber);
-    bannerAds.add(BannerAd(
-        size: AdSize.fullBanner,
-        adUnitId: AdMobService.bannerAdUnitId!,
-        listener: AdMobService.bannerListener,
-        request: const AdRequest())
-      ..load());
-
-    if (x?.isEmpty == false) {
-      setState(() {
-        for (int i = 0; i < x!.length; i++) {
-          String type = x?[i]["file"]["Type"];
+  Future<void> getInfo(phoneNumber) async {
+    if (phoneNumber != null) {
+      x = await cGI.getContent(phoneNumber);
+      bannerAds.add(BannerAd(
+          size: AdSize.fullBanner,
+          adUnitId: AdMobService.bannerAdUnitId!,
+          listener: AdMobService.bannerListener,
+          request: const AdRequest())
+        ..load());
+      if (x?.isEmpty == false) {
+        await Future.forEach(x!, (item) async {
+          String type = item["file"]["Type"];
           if (type == "IMAGE") {
-            bigBoi.add(ImageWidget(recievedContent: x?[i]));
+            bigBoi.add(ImageWidget(recievedContent: item));
           } else if (type == "VIDEO") {
             try {
               bigBoi.add(VideoWidget(
-                  recievedContent: x?[i],
+                  recievedContent: item,
                   updateOtherVideoWidgets: updateAllVideoWidgetStates));
             } catch (e) {}
           } else {
             print("UNRECOGNISED FILE TYPE");
           }
           canGetNewInfo = true;
-        }
-      });
-    } else {
-      setState(() {
-        //bigBoi.add(Text("Looks like you've reached the bottom."));
-      });
+        });
+        setState(() {});
+      } else {
+        setState(() {
+          //bigBoi.add(Text("Looks like you've reached the bottom."));
+        });
+      }
     }
   }
 
@@ -130,11 +140,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     //[[phoneNumber, username, bigBoi],"location"]
-    if (canGetInitialInfo == true) {
-      canBeExited = true;
-      getInfo();
-      canGetInitialInfo = false;
-    }
 
     return Scaffold(
       body: Column(
@@ -142,7 +147,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
           TextButton(
               onPressed: () {
                 canBeExited = false;
-                print("USERNAME IN VIEWCONTENT: ${myInformation[0]} ");
                 updateAllVideoWidgetStates();
                 Navigator.push(
                   context,
@@ -170,7 +174,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                           currentIndex == bigBoi.length) {
                         if (canGetNewInfo == true) {
                           try {
-                            getInfo();
+                            getInfo(phoneNumber);
                           } catch (e) {
                             print(e);
                           }
@@ -193,7 +197,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                     itemBuilder: (context, index) {
                       return ListView.builder(
                         controller: _innerNestedScrollController,
-                        itemCount: bigBoi.length,
+                        itemCount: bigBoi.length + 1,
                         shrinkWrap: true,
                         itemBuilder: (BuildContext context, int i) {
                           if ((i % 10) == 0) {
@@ -214,7 +218,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                               ],
                             );
                           } else {
-                            return bigBoi[i];
+                            return bigBoi[i - 1];
                           }
                         },
                       );

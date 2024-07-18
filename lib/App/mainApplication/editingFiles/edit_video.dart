@@ -110,10 +110,8 @@ class _EditVideoState extends State<EditVideo> {
                     ),
                   );
                   print("VALUE OF X: $x");
-
                   if (x != null) {
                     pickedFile = x;
-
                     File trimmedFile = File(pickedFile.path);
                     trimmedFile = await trimmedFile.copy(originalPath);
                     pickedFile = XFile(trimmedFile.path);

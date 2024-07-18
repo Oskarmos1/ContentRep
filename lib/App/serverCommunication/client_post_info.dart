@@ -42,7 +42,7 @@ class ClientPostInfo {
           "Username": username,
           "Title": title,
           "Description": description,
-          "Location": "newPost",
+          "Location": "newPost", //newPost
           "Post": {"File": file, "Type": fileType},
           "Category": "main"
         }));

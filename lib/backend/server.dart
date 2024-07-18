@@ -82,8 +82,8 @@ Future<void> handlePost(HttpRequest request) async {
 
 void handleGet(HttpRequest request) {
   ServerGetFunctions sGF = ServerGetFunctions();
-  String? phoneNumber = request.uri.queryParameters['phoneNumber'];
-  phoneNumber = phoneNumber?.replaceAll(" ", "+");
+  String phoneNumber = request.uri.queryParameters['phoneNumber']!;
+  phoneNumber = phoneNumber.replaceAll(" ", "+");
   String? location = request.uri.queryParameters['location'];
   Object? result;
 

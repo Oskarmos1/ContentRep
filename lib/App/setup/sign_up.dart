@@ -145,8 +145,6 @@ class _signUpState extends State<signUp> {
                   if (canSubmit == true) {
                     setState(() {
                       verificationCode = text;
-                      print(
-                          "$verificationCode _______________________________________________________");
                     });
                   }
                 },

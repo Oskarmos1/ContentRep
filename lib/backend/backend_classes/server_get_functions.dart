@@ -9,7 +9,7 @@ class ServerGetFunctions {
     return purgatory[phoneNumber]?.username;
   }
 */
-  List<Content>? getContent(List<Content>? allContent, String? phoneNumber) {
+  List<Content>? getContent(List<Content>? allContent, String phoneNumber) {
     List<Content>? result;
 
     if (allContent?.isEmpty == true) {
@@ -18,20 +18,18 @@ class ServerGetFunctions {
       List<Content>? returnArray = allContent!
           .where((obj) => !obj.seenBy.contains(phoneNumber))
           .toList();
-
       result = returnArray.toList()
         ..sort((a, b) => b.contentScore.compareTo(a.contentScore));
       if (result.length > 9) {
         result = result.sublist(0, 10);
       } else if (result.length <= 9 && result.isNotEmpty) {
-        result = result.sublist(0, result.length - 1);
+        result = result.sublist(0, result.length);
       }
 
       for (Content obj in result) {
         obj.seenBy.add(phoneNumber.toString());
       }
     }
-
     return result;
   }
 

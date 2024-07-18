@@ -66,6 +66,10 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                           [phoneNumber, widget.username],
                           pickedFile
                         ]);
+                  } else {
+                    Navigator.pop(
+                      context,
+                    );
                   }
                 },
                 child: const Text("POST AN IMAGE")),
@@ -76,11 +80,17 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                   final pickedFile = await picker.pickVideo(
                     source: ImageSource.gallery,
                   );
-                  Navigator.pushReplacementNamed(context, '/editVideo',
-                      arguments: [
-                        [phoneNumber, widget.username],
-                        pickedFile
-                      ]);
+                  if (pickedFile != null) {
+                    Navigator.pushReplacementNamed(context, '/editVideo',
+                        arguments: [
+                          [phoneNumber, widget.username],
+                          pickedFile
+                        ]);
+                  } else {
+                    Navigator.pop(
+                      context,
+                    );
+                  }
                 },
                 child: const Text("POST A VIDEO")),
             TextButton(
