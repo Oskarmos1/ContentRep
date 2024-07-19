@@ -26,7 +26,7 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-
+    trial();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -56,20 +56,22 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
           children: <Widget>[
             TextButton(
                 onPressed: () async {
-                  canBeExited = false;
-                  ImagePicker picker = ImagePicker();
-                  XFile? pickedFile =
-                      await picker.pickImage(source: ImageSource.gallery);
-                  if (pickedFile != null) {
-                    Navigator.pushReplacementNamed(context, '/editImage',
-                        arguments: [
-                          [phoneNumber, widget.username],
-                          pickedFile
-                        ]);
-                  } else {
-                    Navigator.pop(
-                      context,
-                    );
+                  if (phoneNumber != null) {
+                    canBeExited = false;
+                    ImagePicker picker = ImagePicker();
+                    XFile? pickedFile =
+                        await picker.pickImage(source: ImageSource.gallery);
+                    if (pickedFile != null) {
+                      Navigator.pushReplacementNamed(context, '/editImage',
+                          arguments: [
+                            [phoneNumber, widget.username],
+                            pickedFile
+                          ]);
+                    } else {
+                      Navigator.pop(
+                        context,
+                      );
+                    }
                   }
                 },
                 child: const Text("POST AN IMAGE")),

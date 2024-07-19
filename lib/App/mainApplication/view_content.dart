@@ -84,11 +84,16 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
       //listener: AdMobService.bannerListener,
       // request: const AdRequest())
       //..load());
+
       if (x?.isEmpty == false) {
         await Future.forEach(x!, (item) async {
           String type = item["file"]["Type"];
           if (type == "IMAGE") {
-            bigBoi.add(ImageWidget(recievedContent: item));
+            bigBoi.add(ImageWidget(
+              recievedContent: item,
+              location: "view_content",
+              myData: [phoneNumber, myInformation[0]],
+            ));
           } else if (type == "VIDEO") {
             try {
               bigBoi.add(VideoWidget(
@@ -150,6 +155,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
+                    //Why no phone number?
                     builder: (context) => postContent(
                       username: myInformation[0],
                     ),
@@ -231,6 +237,3 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
 }
 
 //1 for posts and viewing content, 2 for making posts/ content, 3 for texting, 4 for profile info and settings
-
-
-//Issue: when taking pictures from my gallery just says invalid

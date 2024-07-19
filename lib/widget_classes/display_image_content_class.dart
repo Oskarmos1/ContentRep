@@ -3,35 +3,65 @@ import 'dart:convert';
 //import '../backend_classes/comment.dart';
 import 'dart:typed_data';
 
+import 'package:daily/App/serverCommunication/client_post_info.dart';
 import "package:flutter/material.dart";
 
 class ImageWidget extends StatefulWidget {
   final Map recievedContent;
-  const ImageWidget({super.key, required this.recievedContent});
+  final String location;
+  final List myData;
+  const ImageWidget(
+      {super.key,
+      required this.recievedContent,
+      required this.location,
+      required this.myData});
 
   @override
   State<ImageWidget> createState() => _ImageWidgetState();
 }
 
 class _ImageWidgetState extends State<ImageWidget> {
+  double LDCOpacity = 0;
+  bool started = true;
+  bool liked = false;
+  int? likes;
+  int? dislikes;
   @override
   Widget build(BuildContext context) {
+    ClientPostInfo cPI = ClientPostInfo();
+
     dynamic display;
     String type = widget.recievedContent["file"]["Type"];
+    String location = widget.location;
 
     Uint8List bytes = base64.decode(widget.recievedContent["file"]["File"]);
-    print(bytes);
+    String myPhoneNumber = widget.myData[0];
+    String myUsername = widget.myData[1];
     display = Image.memory(bytes);
     String id = widget.recievedContent["contentId"].toString();
+    print("IN DISPLAY IMAGE CONTENT ID: $id");
     String owner = widget.recievedContent["owner"];
     String title = widget.recievedContent["title"];
     String description = widget.recievedContent["description"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     //List<Comment> comments = widget.recievedContent["comments"];
-    int likes = widget.recievedContent["likes"];
-    int dislikes = widget.recievedContent["dislikes"];
-    int noOfComments = widget.recievedContent["noOfComments"];
 
+    int noOfComments = widget.recievedContent["noOfComments"];
+    void trial() {
+      if (location == "edit_image") {
+        LDCOpacity = 0;
+      } else {
+        LDCOpacity = 1;
+      }
+      likes = widget.recievedContent["likes"];
+      dislikes = widget.recievedContent["dislikes"];
+      setState(() {});
+    }
+
+    if (started == true) {
+      started = false;
+      trial();
+    }
     return Container(
       child: Column(
         children: <Widget>[
@@ -45,7 +75,31 @@ class _ImageWidgetState extends State<ImageWidget> {
           const Text("COMMENTS NOT IMPLEMENTED YET"),
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
-          Text("Number of Comments: $noOfComments")
+          Text("Number of Comments: $noOfComments"),
+          Opacity(
+              opacity: LDCOpacity,
+              child: TextButton(
+                child: Text("Like button"),
+                onPressed: () {
+                  if (LDCOpacity == 1) {
+                    if (liked == false) {
+                      print("I happened");
+                      liked = true;
+                      likes = likes! + 1;
+
+                      cPI.likePost(myPhoneNumber, myUsername, id);
+                    } else {
+                      liked = false;
+
+                      likes = likes! - 1;
+
+                      cPI.unLikePost(myPhoneNumber, myUsername, id);
+                    }
+                    print(likes);
+                    setState(() {});
+                  }
+                },
+              )),
         ],
       ),
     );

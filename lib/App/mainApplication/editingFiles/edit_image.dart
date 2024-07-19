@@ -33,7 +33,6 @@ class _EditImageState extends State<EditImage> {
   String description = "";
   bool started = true;
   late XFile pickedFile;
-  String? phoneNumber;
   String? username;
   Uint8List? fileBytes;
   ClientPostInfo cPI = ClientPostInfo();
@@ -42,7 +41,7 @@ class _EditImageState extends State<EditImage> {
     List postContentRecievedInfo =
         ModalRoute.of(context)!.settings.arguments as List;
     pickedFile = postContentRecievedInfo[1];
-    phoneNumber = postContentRecievedInfo[0][0];
+    String phoneNumber = postContentRecievedInfo[0][0];
     username = postContentRecievedInfo[0][1];
 
     void trial() async {
@@ -109,8 +108,10 @@ class _EditImageState extends State<EditImage> {
                       "timeOfPost": DateTime.now().toString(),
                       "likes": 0,
                       "dislikes": 0,
-                      "noOfComments": 0
+                      "noOfComments": 0,
                     },
+                    location: "edit_image",
+                    myData: [phoneNumber, username],
                   ),
                   ElevatedButton(
                     onPressed: () async {

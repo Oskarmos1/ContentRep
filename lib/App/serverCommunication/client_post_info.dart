@@ -48,12 +48,24 @@ class ClientPostInfo {
         }));
   }
 
-  Future<void> likePost(phoneNumber, username, liked) async {
+  Future<void> likePost(phoneNumber, username, contentId) async {
+    print("CONTENT ID IN likePOST: " + contentId.toString());
     await http.post(Uri.parse(url),
         body: jsonEncode({
           "PhoneNumber": phoneNumber,
           "Username": username,
-          "Location": "Like"
+          "Location": "Like",
+          "ContentId": contentId
+        }));
+  }
+
+  Future<void> unLikePost(phoneNumber, username, contentId) async {
+    await http.post(Uri.parse(url),
+        body: jsonEncode({
+          "PhoneNumber": phoneNumber,
+          "Username": username,
+          "Location": "UnLike",
+          "ContentId": contentId
         }));
   }
 
