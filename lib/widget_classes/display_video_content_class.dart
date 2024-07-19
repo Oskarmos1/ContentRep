@@ -124,7 +124,6 @@ class _VideoWidgetState extends State<VideoWidget> {
           Text("TITLE: $title"),
           GestureDetector(
             onTap: () {
-              print("I was tapped");
               canBeCleared = false;
               killAll();
               setState(() {

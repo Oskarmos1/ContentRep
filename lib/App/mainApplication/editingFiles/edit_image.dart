@@ -103,6 +103,7 @@ class _EditImageState extends State<EditImage> {
                         "File": base64Encode(fileBytes!)
                       },
                       "owner": username,
+                      "contentId": "it will be given by the server",
                       "title": title,
                       "description": description,
                       "timeOfPost": DateTime.now().toString(),

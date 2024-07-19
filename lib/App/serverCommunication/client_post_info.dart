@@ -42,13 +42,22 @@ class ClientPostInfo {
           "Username": username,
           "Title": title,
           "Description": description,
-          "Location": "newPost", //newPost
+          "Location": "test", //newPost
           "Post": {"File": file, "Type": fileType},
           "Category": "main"
         }));
   }
 
-  void exitApp(phoneNumber, username) async {
+  Future<void> likePost(phoneNumber, username, liked) async {
+    await http.post(Uri.parse(url),
+        body: jsonEncode({
+          "PhoneNumber": phoneNumber,
+          "Username": username,
+          "Location": "Like"
+        }));
+  }
+
+  Future<void> exitApp(phoneNumber, username) async {
     await http.post(Uri.parse(url),
         body: jsonEncode({
           "PhoneNumber": phoneNumber,

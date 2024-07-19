@@ -109,7 +109,6 @@ class _EditVideoState extends State<EditVideo> {
                       builder: (context) => TrimmerView(File(pickedFile.path)),
                     ),
                   );
-                  print("VALUE OF X: $x");
                   if (x != null) {
                     pickedFile = x;
                     File trimmedFile = File(pickedFile.path);

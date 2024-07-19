@@ -22,7 +22,7 @@ class _ImageWidgetState extends State<ImageWidget> {
     Uint8List bytes = base64.decode(widget.recievedContent["file"]["File"]);
     print(bytes);
     display = Image.memory(bytes);
-
+    String id = widget.recievedContent["contentId"].toString();
     String owner = widget.recievedContent["owner"];
     String title = widget.recievedContent["title"];
     String description = widget.recievedContent["description"];
@@ -36,6 +36,7 @@ class _ImageWidgetState extends State<ImageWidget> {
       child: Column(
         children: <Widget>[
           Text(owner),
+          Text("ID: $id"),
           Text("TITLE: $title"),
           SizedBox(width: 200, height: 200, child: display),
           Text("DESCRIPTION: $description"),

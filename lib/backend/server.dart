@@ -10,8 +10,10 @@ import 'backend_classes/user.dart';
 
 Map<String, User> info = {};
 Map<String, User> purgatory = {};
+int contentId = 0;
 Map<String, List<Content>> allContent = {
   "main": [],
+  /*
   "film/cartoon": [],
   "music": [],
   "nature": [],
@@ -23,6 +25,7 @@ Map<String, List<Content>> allContent = {
   "education": [],
   "STEM": [],
   "other": [],
+  */
 };
 //
 //Images are stored according to which category they belong to. However, the user can sort what type of images they want to see first for example: recommended, most recent, most discussed, most liked, most disliked.
@@ -56,7 +59,9 @@ Future<void> handlePost(HttpRequest request) async {
         0,
         0,
         [],
-        0.0));
+        0.0,
+        contentId));
+    contentId += 1;
   } else if (recieveInfo["Location"] == "test") {
     for (int i = 0; i < 100; i++) {
       allContent[recieveInfo["Category"]]?.add(Content(
@@ -70,7 +75,9 @@ Future<void> handlePost(HttpRequest request) async {
           i,
           i,
           [],
-          i / 2));
+          i / 2,
+          contentId));
+      contentId += 1;
     }
   }
 

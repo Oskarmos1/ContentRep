@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:daily/App/mainApplication/post_content.dart';
 import 'package:daily/App/serverCommunication/client_get_info.dart';
 import 'package:daily/App/serverCommunication/client_post_info.dart';
-import 'package:daily/widget_classes/ad_state.dart';
 import 'package:daily/widget_classes/display_image_content_class.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -69,7 +68,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (bigBoi.isEmpty == true && canGetInitialInfo == true) {
         canBeExited = true;
-        print("GET INFO IS ABOUT TO OCCUR: $phoneNumber");
+
         getInfo(phoneNumber);
         canGetInitialInfo = false;
       }
@@ -79,12 +78,12 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   Future<void> getInfo(phoneNumber) async {
     if (phoneNumber != null) {
       x = await cGI.getContent(phoneNumber);
-      bannerAds.add(BannerAd(
-          size: AdSize.fullBanner,
-          adUnitId: AdMobService.bannerAdUnitId!,
-          listener: AdMobService.bannerListener,
-          request: const AdRequest())
-        ..load());
+      //bannerAds.add(BannerAd(
+      //  size: AdSize.fullBanner,
+      // adUnitId: AdMobService.bannerAdUnitId!,
+      //listener: AdMobService.bannerListener,
+      // request: const AdRequest())
+      //..load());
       if (x?.isEmpty == false) {
         await Future.forEach(x!, (item) async {
           String type = item["file"]["Type"];
