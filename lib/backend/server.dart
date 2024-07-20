@@ -93,6 +93,20 @@ Future<void> handlePost(HttpRequest request) async {
         allContent["main"]![i].likes = allContent["main"]![i].likes - 1;
       }
     }
+  } else if (recieveInfo["Location"] == "Dislike") {
+    for (int i = 0; i < allContent["main"]!.length; i++) {
+      if (allContent["main"]![i].contentId ==
+          int.parse(recieveInfo["ContentId"])) {
+        allContent["main"]![i].dislikes = allContent["main"]![i].dislikes + 1;
+      }
+    }
+  } else if (recieveInfo["Location"] == "UnDislike") {
+    for (int i = 0; i < allContent["main"]!.length; i++) {
+      if (allContent["main"]![i].contentId ==
+          int.parse(recieveInfo["ContentId"])) {
+        allContent["main"]![i].dislikes = allContent["main"]![i].dislikes - 1;
+      }
+    }
   }
 
   request.response

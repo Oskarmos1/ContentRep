@@ -69,6 +69,27 @@ class ClientPostInfo {
         }));
   }
 
+  Future<void> dislikePost(phoneNumber, username, contentId) async {
+    print("CONTENT ID IN likePOST: " + contentId.toString());
+    await http.post(Uri.parse(url),
+        body: jsonEncode({
+          "PhoneNumber": phoneNumber,
+          "Username": username,
+          "Location": "Dislike",
+          "ContentId": contentId
+        }));
+  }
+
+  Future<void> unDislikePost(phoneNumber, username, contentId) async {
+    await http.post(Uri.parse(url),
+        body: jsonEncode({
+          "PhoneNumber": phoneNumber,
+          "Username": username,
+          "Location": "UnDislike",
+          "ContentId": contentId
+        }));
+  }
+
   Future<void> exitApp(phoneNumber, username) async {
     await http.post(Uri.parse(url),
         body: jsonEncode({

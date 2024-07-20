@@ -24,6 +24,7 @@ class _ImageWidgetState extends State<ImageWidget> {
   double LDCOpacity = 0;
   bool started = true;
   bool liked = false;
+  bool disliked = false;
   int? likes;
   int? dislikes;
   @override
@@ -68,7 +69,7 @@ class _ImageWidgetState extends State<ImageWidget> {
           Text(owner),
           Text("ID: $id"),
           Text("TITLE: $title"),
-          SizedBox(width: 200, height: 200, child: display),
+          SizedBox(width: 100, height: 100, child: display),
           Text("DESCRIPTION: $description"),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
@@ -83,17 +84,43 @@ class _ImageWidgetState extends State<ImageWidget> {
                 onPressed: () {
                   if (LDCOpacity == 1) {
                     if (liked == false) {
-                      print("I happened");
                       liked = true;
                       likes = likes! + 1;
-
+                      if (disliked == true) {
+                        disliked = false;
+                        dislikes = dislikes! - 1;
+                        cPI.unDislikePost(myPhoneNumber, myUsername, id);
+                      }
                       cPI.likePost(myPhoneNumber, myUsername, id);
                     } else {
                       liked = false;
-
                       likes = likes! - 1;
-
                       cPI.unLikePost(myPhoneNumber, myUsername, id);
+                    }
+                    print(likes);
+                    setState(() {});
+                  }
+                },
+              )),
+          Opacity(
+              opacity: LDCOpacity,
+              child: TextButton(
+                child: Text("Dislike button"),
+                onPressed: () {
+                  if (LDCOpacity == 1) {
+                    if (disliked == false) {
+                      disliked = true;
+                      dislikes = dislikes! + 1;
+                      if (liked == true) {
+                        liked = false;
+                        likes = likes! - 1;
+                        cPI.unLikePost(myPhoneNumber, myUsername, id);
+                      }
+                      cPI.dislikePost(myPhoneNumber, myUsername, id);
+                    } else {
+                      disliked = false;
+                      dislikes = dislikes! - 1;
+                      cPI.unDislikePost(myPhoneNumber, myUsername, id);
                     }
                     print(likes);
                     setState(() {});
