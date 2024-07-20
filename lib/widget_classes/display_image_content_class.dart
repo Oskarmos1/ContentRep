@@ -40,7 +40,6 @@ class _ImageWidgetState extends State<ImageWidget> {
     String myUsername = widget.myData[1];
     display = Image.memory(bytes);
     String id = widget.recievedContent["contentId"].toString();
-    print("IN DISPLAY IMAGE CONTENT ID: $id");
     String owner = widget.recievedContent["owner"];
     String title = widget.recievedContent["title"];
     String description = widget.recievedContent["description"];

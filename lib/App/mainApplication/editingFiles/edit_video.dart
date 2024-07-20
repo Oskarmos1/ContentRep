@@ -41,8 +41,11 @@ class _EditVideoState extends State<EditVideo> {
             "timeOfPost": DateTime.now().toString(),
             "likes": 0,
             "dislikes": 0,
+            "contentId": "Will be given by server",
             "noOfComments": 0
           },
+          location: "edit_video",
+          myData: [phoneNumber!, username!],
           updateOtherVideoWidgets: () {},
         );
       });
@@ -155,3 +158,4 @@ class _EditVideoState extends State<EditVideo> {
     );
   }
 }
+// when the video is playing and is edited, that is when errors occur.

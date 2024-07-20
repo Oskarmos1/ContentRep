@@ -98,6 +98,8 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
             try {
               bigBoi.add(VideoWidget(
                   recievedContent: item,
+                  location: "view_content",
+                  myData: [phoneNumber, myInformation[0]],
                   updateOtherVideoWidgets: updateAllVideoWidgetStates));
             } catch (e) {}
           } else {
