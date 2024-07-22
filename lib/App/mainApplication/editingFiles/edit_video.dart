@@ -14,7 +14,7 @@ class EditVideo extends StatefulWidget {
   _EditVideoState createState() => _EditVideoState();
 }
 
-class _EditVideoState extends State<EditVideo> {
+class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
   String title = "";
   String description = "";
   dynamic videoWidget = const Placeholder();
@@ -25,6 +25,36 @@ class _EditVideoState extends State<EditVideo> {
   double waitingButtonOpacity = 0;
   bool started = true;
   ClientPostInfo cPI = ClientPostInfo();
+  DateTime? _lastLifecycleChange;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    videoWidget.disposeVideoWidget();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    //final now = DateTime.now();
+    //if (_lastLifecycleChange == null ||
+    //   now.difference(_lastLifecycleChange!) > Duration(seconds: 1)) {
+    //_lastLifecycleChange = now;
+
+    if (state != AppLifecycleState.resumed) {
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/');
+        await cPI.exitApp(phoneNumber, username);
+      }
+    }
+    //}
+  }
+
   @override
   Widget build(BuildContext context) {
     void updateVideoWidget() {
@@ -63,20 +93,26 @@ class _EditVideoState extends State<EditVideo> {
     }
 
     Future<void> encodeXFileVideo(XFile xFile) async {
-      MediaInfo? returning = await VideoCompress.compressVideo(
-        xFile.path,
-        quality: VideoQuality.LowQuality,
-        deleteOrigin: true,
-        includeAudio: true,
-        frameRate: 5,
-      );
+      if (mounted) {
+        MediaInfo? returning = await VideoCompress.compressVideo(
+          xFile.path,
+          quality: VideoQuality.LowQuality,
+          deleteOrigin: true,
+          includeAudio: true,
+          frameRate: 5,
+        );
 
-      if (returning != null) {
-        await cPI.postContent(phoneNumber, username, title, description,
-            returning.toJson(), "VIDEO");
+        if (returning != null) {
+          await cPI.postContent(phoneNumber, username, title, description,
+              returning.toJson(), "VIDEO");
+        }
+        videoWidget.disposeVideoWidget();
+
+        Navigator.pushReplacementNamed(
+          context,
+          '/viewContent',
+        );
       }
-      videoWidget.disposeVideoWidget();
-      Navigator.pushReplacementNamed(context, '/viewContent');
     }
 
     return Scaffold(
@@ -103,24 +139,29 @@ class _EditVideoState extends State<EditVideo> {
             ),
             TextButton(
                 onPressed: () async {
-                  String originalPath = pickedFile.path;
-                  XFile? x = null;
-                  videoWidget.disposeVideoWidget();
-                  x = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TrimmerView(File(pickedFile.path)),
-                    ),
-                  );
-                  if (x != null) {
-                    pickedFile = x;
-                    File trimmedFile = File(pickedFile.path);
-                    trimmedFile = await trimmedFile.copy(originalPath);
-                    pickedFile = XFile(trimmedFile.path);
-                    setState(() {
-                      postButtonOpacity = 1.0;
-                      updateVideoWidget();
-                    });
+                  if (mounted) {
+                    String originalPath = pickedFile.path;
+                    XFile? x = null;
+                    videoWidget.disposeVideoWidget();
+
+                    x = await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            TrimmerView(File(pickedFile.path)),
+                      ),
+                    );
+
+                    if (x != null) {
+                      pickedFile = x;
+                      File trimmedFile = File(pickedFile.path);
+                      trimmedFile = await trimmedFile.copy(originalPath);
+                      pickedFile = XFile(trimmedFile.path);
+                      setState(() {
+                        postButtonOpacity = 1.0;
+                        updateVideoWidget();
+                      });
+                    }
                   }
                 },
                 child: const Text("Edit the video")),
@@ -148,7 +189,9 @@ class _EditVideoState extends State<EditVideo> {
             TextButton(
               onPressed: () {
                 videoWidget.disposeVideoWidget();
-                Navigator.pop(context);
+                if (mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: const Text("CANCEL"),
             ),

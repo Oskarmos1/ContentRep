@@ -23,18 +23,21 @@ class _loadingState extends State<loading> {
   }
 
   void trial() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? phoneNumber = prefs.getString('phoneNumber');
-    if (phoneNumber == null) {
-      Navigator.pushReplacementNamed(context, '/signUp');
-    } else {
-      direction = await cGI.checkServerStatus(phoneNumber);
-      if (direction == true) {
-        Navigator.pushReplacementNamed(context, '/userName');
+    if (mounted) {
+      final prefs = await SharedPreferences.getInstance();
+      final String? phoneNumber = prefs.getString('phoneNumber');
+
+      if (phoneNumber == null) {
+        Navigator.pushReplacementNamed(context, '/signUp');
       } else {
-        setState(() {
-          failOpacity = 1.0;
-        });
+        direction = await cGI.checkServerStatus(phoneNumber);
+        if (direction == true) {
+          Navigator.pushReplacementNamed(context, '/userName');
+        } else {
+          setState(() {
+            failOpacity = 1.0;
+          });
+        }
       }
     }
   }
@@ -55,10 +58,12 @@ class _loadingState extends State<loading> {
             child: TextButton(
                 onPressed: () {
                   if (direction == false) {
-                    Navigator.pushReplacementNamed(
-                      context,
-                      '/',
-                    );
+                    if (mounted) {
+                      Navigator.pushReplacementNamed(
+                        context,
+                        '/',
+                      );
+                    }
                   }
                 },
                 child: const Text(

@@ -14,7 +14,7 @@ class EditImage extends StatefulWidget {
   State<EditImage> createState() => _EditImageState();
 }
 
-class _EditImageState extends State<EditImage> {
+class _EditImageState extends State<EditImage> with WidgetsBindingObserver {
   Future<String> encodeXFileToBase64(Uint8List fileBytes) async {
     // Compress the image using flutter_image_compress
     Uint8List compressedBytes = await FlutterImageCompress.compressWithList(
@@ -29,11 +29,36 @@ class _EditImageState extends State<EditImage> {
     return base64Image;
   }
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state != AppLifecycleState.resumed) {
+      if (mounted) {
+        print("QUIT IN EDIT IMAGE");
+        Navigator.pushReplacementNamed(context, '/');
+        await cPI.exitApp(phoneNumber, username);
+      }
+    }
+    //}
+  }
+
   String title = "";
   String description = "";
   bool started = true;
   late XFile pickedFile;
-  String? username;
+  String username = "";
+  String? phoneNumber;
   Uint8List? fileBytes;
   ClientPostInfo cPI = ClientPostInfo();
   @override
@@ -41,9 +66,8 @@ class _EditImageState extends State<EditImage> {
     List postContentRecievedInfo =
         ModalRoute.of(context)!.settings.arguments as List;
     pickedFile = postContentRecievedInfo[1];
-    String phoneNumber = postContentRecievedInfo[0][0];
+    phoneNumber = postContentRecievedInfo[0][0];
     username = postContentRecievedInfo[0][1];
-
     void trial() async {
       fileBytes = await pickedFile.readAsBytes();
       setState(() {});
@@ -79,19 +103,20 @@ class _EditImageState extends State<EditImage> {
                   ElevatedButton(
                     child: const Text("ImageEditor"),
                     onPressed: () async {
-                      Uint8List? editedImage = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ImageEditor(
-                            image: fileBytes!,
+                      if (mounted) {
+                        Uint8List? editedImage = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ImageEditor(
+                              image: fileBytes!,
+                            ),
                           ),
-                        ),
-                      );
-
-                      // Replace with edited image
-                      if (editedImage != null) {
-                        fileBytes = editedImage;
-                        setState(() {});
+                        );
+                        // Replace with edited image
+                        if (editedImage != null) {
+                          fileBytes = editedImage;
+                          setState(() {});
+                        }
                       }
                     },
                   ),
@@ -115,32 +140,27 @@ class _EditImageState extends State<EditImage> {
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      String encodedImage =
-                          await encodeXFileToBase64(fileBytes!);
-                      /*
-                      await http.post(Uri.parse("http://192.168.0.19:400"),
-                          body: jsonEncode({
-                            "PhoneNumber": phoneNumber,
-                            "Username": username,
-                            "Location": "test",
-                            "Post": {"File": encodedImage, "Type": "IMAGE"},
-                            "Category": "main"
-                          }));
-                          */
-                      await cPI.postContent(phoneNumber, username, title,
-                          description, encodedImage, "IMAGE");
-                      Navigator.pushReplacementNamed(
-                        context,
-                        '/viewContent',
-                      );
+                      if (mounted) {
+                        String encodedImage =
+                            await encodeXFileToBase64(fileBytes!);
+                        await cPI.postContent(phoneNumber, username, title,
+                            description, encodedImage, "IMAGE");
+
+                        Navigator.pushReplacementNamed(
+                          context,
+                          '/viewContent',
+                        );
+                      }
                     },
                     child: const Text("PRESS ME TO POST THE IMAGE"),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.pop(
-                        context,
-                      );
+                      if (mounted) {
+                        Navigator.pop(
+                          context,
+                        );
+                      }
                     },
                     child: const Text("Return to view content"),
                   ),

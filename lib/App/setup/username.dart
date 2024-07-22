@@ -52,41 +52,46 @@ class _UsernameState extends State<Username> {
           TextButton(
               child: Text("Sign up as: $username"),
               onPressed: () async {
-                isActive = await cGI.checkServerStatus(phoneNumber);
-                if (isActive == true) {
-                  if (username != null) {
-                    canGoToViewContent =
-                        await cPI.postNewUsername(phoneNumber, username);
-                    if (canGoToViewContent == true) {
-                      Navigator.pushReplacementNamed(context, '/viewContent');
-                    } else {
-                      Navigator.pushReplacementNamed(context, '/noConnection',
-                          arguments: "Failed to post info to server.");
+                if (mounted) {
+                  isActive = await cGI.checkServerStatus(phoneNumber);
+                  if (isActive == true) {
+                    if (username != null) {
+                      canGoToViewContent =
+                          await cPI.postNewUsername(phoneNumber, username);
+                      if (canGoToViewContent == true) {
+                        Navigator.pushReplacementNamed(context, '/viewContent');
+                      } else {
+                        Navigator.pushReplacementNamed(context, '/noConnection',
+                            arguments: "Failed to post info to server.");
+                      }
                     }
+                  } else {
+                    Navigator.pushReplacementNamed(context, '/noConnection',
+                        arguments: "Failed to connect to server.");
                   }
-                } else {
-                  Navigator.pushReplacementNamed(context, '/noConnection',
-                      arguments: "Failed to connect to server.");
                 }
               }),
           TextButton(
               onPressed: () async {
-                isActive = await cGI.checkServerStatus(phoneNumber);
-                if (isActive == true) {
-                  canContinue = await cGI.canGetOldAccount(phoneNumber);
-                  if (canContinue == true) {
-                    canGoToViewContent = await cPI.postOldUsername(phoneNumber);
-                    if (canGoToViewContent == true) {
-                      Navigator.pushReplacementNamed(context, '/viewContent');
-                    } else {
-                      Navigator.pushReplacementNamed(context, '/noConnection',
-                          arguments:
-                              'Error updating your information on server.');
+                if (mounted) {
+                  isActive = await cGI.checkServerStatus(phoneNumber);
+                  if (isActive == true) {
+                    canContinue = await cGI.canGetOldAccount(phoneNumber);
+                    if (canContinue == true) {
+                      canGoToViewContent =
+                          await cPI.postOldUsername(phoneNumber);
+                      if (canGoToViewContent == true) {
+                        Navigator.pushReplacementNamed(context, '/viewContent');
+                      } else {
+                        Navigator.pushReplacementNamed(context, '/noConnection',
+                            arguments:
+                                'Error updating your information on server.');
+                      }
                     }
+                  } else {
+                    Navigator.pushReplacementNamed(context, '/noConnection',
+                        arguments: "Failed to connect to server.");
                   }
-                } else {
-                  Navigator.pushReplacementNamed(context, '/noConnection',
-                      arguments: "Failed to connect to server.");
                 }
               },
               child: const Text("Use your previous account"))

@@ -38,11 +38,11 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   bool canGetNewInfo = true;
   ClientPostInfo cPI = ClientPostInfo();
   ClientGetInfo cGI = ClientGetInfo();
+  late Timer _periodicTimer;
   Future<void> trial() async {
     final prefs = await SharedPreferences.getInstance();
     phoneNumber = await prefs.getString('phoneNumber')!;
     myInformation = await cGI.getMyCurrentInfo(phoneNumber);
-
     setState(() {});
   }
 
@@ -65,12 +65,9 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
     _outerNestedScrollController = ScrollController();
     WidgetsBinding.instance.addObserver(this);
     trial();
-    Timer.periodic(const Duration(seconds: 1), (timer) {
+    _periodicTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (bigBoi.isEmpty == true && canGetInitialInfo == true) {
-        canBeExited = true;
-
         getInfo(phoneNumber);
-        canGetInitialInfo = false;
       }
     });
   }
@@ -86,6 +83,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
       //..load());
 
       if (x?.isEmpty == false) {
+        canGetInitialInfo = false;
         await Future.forEach(x!, (item) async {
           String type = item["file"]["Type"];
           if (type == "IMAGE") {
@@ -123,20 +121,28 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
     for (BannerAd bannerAd in bannerAds) {
       bannerAd.dispose();
     }
+    WidgetsBinding.instance.removeObserver(this);
+    _periodicTimer.cancel();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (ModalRoute.of(context)!.isCurrent == true) {
+      canBeExited = true;
+    }
+
     if (canBeExited == true) {
       if (state != AppLifecycleState.resumed) {
         if (mounted) {
+          print("QUIT IN VIEWCONTENT");
           Navigator.pushReplacementNamed(context, '/');
           updateAllVideoWidgetStates();
-          cPI.exitApp(phoneNumber, myInformation[0]);
+          await cPI.exitApp(phoneNumber, myInformation[0]);
         }
       }
     }
+    //}
   }
 
   int _calculateCurrentIndex(double scrollOffset, double itemExtent) {
@@ -145,24 +151,27 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    //[[phoneNumber, username, bigBoi],"location"]
-
     return Scaffold(
-      body: Column(
+        body: SafeArea(
+      child: Column(
         children: <Widget>[
           TextButton(
-              onPressed: () {
-                canBeExited = false;
-                updateAllVideoWidgetStates();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    //Why no phone number?
-                    builder: (context) => postContent(
-                      username: myInformation[0],
+              onPressed: () async {
+                if (mounted) {
+                  setState(() {
+                    canBeExited = false;
+                  });
+                  updateAllVideoWidgetStates();
+
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => postContent(
+                        username: myInformation[0],
+                      ),
                     ),
-                  ),
-                );
+                  );
+                }
               },
               child: const Text("POST SOME INFORMATION TO THE SERVER")),
           Container(
@@ -234,7 +243,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
           Text("$currentIndex ${bigBoi.length}"),
         ],
       ),
-    );
+    ));
   }
 }
 

@@ -97,37 +97,27 @@ class _signUpState extends State<signUp> {
                   child: Text("Send verification to: $phoneNumber"),
                   onPressed: () async {
                     if (isValid == true) {
-                      print(
-                          "I occured (1)___________________________________________________");
                       await FirebaseAuth.instance.verifyPhoneNumber(
                         phoneNumber: phoneNumber,
                         verificationCompleted:
-                            (PhoneAuthCredential credential) {
-                          print("Hello_____________$credential");
-                        },
+                            (PhoneAuthCredential credential) {},
                         verificationFailed: (FirebaseAuthException e) {
-                          print("ERROR_____________$e");
                           setState(() {
                             errorMessage =
                                 "$e Please restart the application and if the issue persists, please try again later.";
                           });
                         },
                         codeSent: (String verificationId, int? resendToken) {
-                          print("YYYYYYYYYYYY___________________$resendToken");
                           setState(() {
                             waitingOpacity = 1;
                           });
                         },
                         codeAutoRetrievalTimeout: (String verificationId) {
-                          print(
-                              "XXXXXXXXXXXXXX_____________________________$verificationId");
                           setState(() {
                             vId = verificationId;
                             canSubmit = true;
                             waitingOpacity = 0;
                           });
-
-                          print("$vId");
                         },
                       );
                     }
@@ -156,21 +146,24 @@ class _signUpState extends State<signUp> {
                     child: Text(
                         "Check your verification code is: $verificationCode"),
                     onPressed: () async {
-                      if (canSubmit == true) {
-                        bool isCodeValid =
-                            await completePhoneVerification(verificationCode);
-                        if (isCodeValid == true) {
-                          SharedPreferences prefs =
-                              await SharedPreferences.getInstance();
-                          await prefs.setString('phoneNumber', phoneNumber);
-                          Navigator.pushReplacementNamed(context, '/userName');
-                        } else {
-                          setState(() {
-                            canSubmit = false;
-                            verificationOpacity = 0;
-                            errorMessage =
-                                "The verification process has not worked. Please check you have put in the correct phone number (your phone number) and then press to get a new verification code.";
-                          });
+                      if (mounted) {
+                        if (canSubmit == true) {
+                          bool isCodeValid =
+                              await completePhoneVerification(verificationCode);
+                          if (isCodeValid == true) {
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setString('phoneNumber', phoneNumber);
+                            Navigator.pushReplacementNamed(
+                                context, '/userName');
+                          } else {
+                            setState(() {
+                              canSubmit = false;
+                              verificationOpacity = 0;
+                              errorMessage =
+                                  "The verification process has not worked. Please check you have put in the correct phone number (your phone number) and then press to get a new verification code.";
+                            });
+                          }
                         }
                       }
                     })),

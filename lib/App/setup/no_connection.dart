@@ -10,15 +10,17 @@ class noConnection extends StatefulWidget {
 class _noConnectionState extends State<noConnection> {
   @override
   Widget build(BuildContext context) {
-    String errorText = ModalRoute.of(context)!.settings.arguments as String;
+    //String errorText = ModalRoute.of(context)!.settings.arguments as String;
     return Scaffold(
         body: SafeArea(
       child: Column(
         children: <Widget>[
-          Text(errorText),
+          //Text(errorText),
           TextButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, '/userName');
+                if (mounted) {
+                  Navigator.pushReplacementNamed(context, '/userName');
+                }
               },
               child: const Text("Return to username"))
         ],

@@ -44,14 +44,9 @@ class _TrimmerViewState extends State<TrimmerView> {
         setState(() {
           _progressVisibility = false;
         });
-        Navigator.pop(context, XFile(outputPath!));
-        /*
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => Preview(outputPath),
-          ),
-        );
-        */
+        if (mounted) {
+          Navigator.pop(context, XFile(outputPath!));
+        }
       },
     );
   }

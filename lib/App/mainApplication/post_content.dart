@@ -13,10 +13,11 @@ class postContent extends StatefulWidget {
 }
 
 class _postContentState extends State<postContent> with WidgetsBindingObserver {
+  //problem is not here
   bool canBeExited = true;
   String? phoneNumber;
   ClientPostInfo cPI = ClientPostInfo();
-
+  DateTime? _lastLifecycleChange;
   Future<void> trial() async {
     final prefs = await SharedPreferences.getInstance();
     phoneNumber = prefs.getString('phoneNumber');
@@ -32,6 +33,7 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -40,11 +42,13 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
     if (canBeExited == true) {
       if (state != AppLifecycleState.resumed) {
         if (mounted) {
+          print("QUIT IN POST CONTENT");
           Navigator.pushReplacementNamed(context, '/');
-          cPI.exitApp(phoneNumber, widget.username);
+          await cPI.exitApp(phoneNumber, widget.username);
         }
       }
     }
+    // }
   }
 
   @override
@@ -56,13 +60,42 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
           children: <Widget>[
             TextButton(
                 onPressed: () async {
-                  if (phoneNumber != null) {
+                  if (mounted) {
+                    if (phoneNumber != null) {
+                      setState(() {
+                        canBeExited = false;
+                      });
+
+                      ImagePicker picker = ImagePicker();
+                      XFile? pickedFile =
+                          await picker.pickImage(source: ImageSource.gallery);
+
+                      if (pickedFile != null) {
+                        Navigator.pushReplacementNamed(context, '/editImage',
+                            arguments: [
+                              [phoneNumber, widget.username],
+                              pickedFile
+                            ]);
+                      } else {
+                        Navigator.pop(
+                          context,
+                        );
+                      }
+                    }
+                  }
+                },
+                child: const Text("POST AN IMAGE")),
+            TextButton(
+                onPressed: () async {
+                  if (mounted) {
                     canBeExited = false;
-                    ImagePicker picker = ImagePicker();
-                    XFile? pickedFile =
-                        await picker.pickImage(source: ImageSource.gallery);
+                    final picker = ImagePicker();
+                    final pickedFile = await picker.pickVideo(
+                      source: ImageSource.gallery,
+                    );
+
                     if (pickedFile != null) {
-                      Navigator.pushReplacementNamed(context, '/editImage',
+                      Navigator.pushReplacementNamed(context, '/editVideo',
                           arguments: [
                             [phoneNumber, widget.username],
                             pickedFile
@@ -74,35 +107,17 @@ class _postContentState extends State<postContent> with WidgetsBindingObserver {
                     }
                   }
                 },
-                child: const Text("POST AN IMAGE")),
-            TextButton(
-                onPressed: () async {
-                  canBeExited = false;
-                  final picker = ImagePicker();
-                  final pickedFile = await picker.pickVideo(
-                    source: ImageSource.gallery,
-                  );
-                  if (pickedFile != null) {
-                    Navigator.pushReplacementNamed(context, '/editVideo',
-                        arguments: [
-                          [phoneNumber, widget.username],
-                          pickedFile
-                        ]);
-                  } else {
-                    Navigator.pop(
-                      context,
-                    );
-                  }
-                },
                 child: const Text("POST A VIDEO")),
             TextButton(
               onPressed: () async {
-                Navigator.pop(
-                  context,
-                );
+                if (mounted) {
+                  Navigator.pop(
+                    context,
+                  );
+                }
               },
               child: const Text("Return to view content"),
-            )
+            ),
           ],
         ),
       ),
