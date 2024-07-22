@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:daily/backend/backend_classes/comment.dart';
 import 'package:daily/backend/backend_classes/content.dart';
 
 import 'backend_classes/return_value.dart';
@@ -11,6 +12,7 @@ import 'backend_classes/user.dart';
 Map<String, User> info = {};
 Map<String, User> purgatory = {};
 int contentId = 0;
+int commentId = 0;
 Map<String, List<Content>> allContent = {
   "main": [],
   /*
@@ -54,13 +56,19 @@ Future<void> handlePost(HttpRequest request) async {
         recieveInfo["Title"],
         recieveInfo["Description"],
         DateTime.now(),
-        [],
+        [
+          Comment("User1", "hahathisis so funny", DateTime.now(), commentId),
+          Comment("User2", "lol", DateTime.now(), commentId),
+          Comment("User3", "123455667", DateTime.now(), commentId),
+          Comment("User4", "what the sigma", DateTime.now(), commentId)
+        ],
         0,
         0,
         0,
         [],
         0.0,
         contentId));
+    commentId += 1;
     contentId += 1;
   } else if (recieveInfo["Location"] == "test") {
     for (int i = 0; i < 100; i++) {
@@ -70,7 +78,12 @@ Future<void> handlePost(HttpRequest request) async {
           recieveInfo["Title"],
           recieveInfo["Description"],
           DateTime.now(),
-          [],
+          [
+            Comment("User1", "hahathisis so funny", DateTime.now(), commentId),
+            Comment("User2", "lol", DateTime.now(), commentId),
+            Comment("User3", "123455667", DateTime.now(), commentId),
+            Comment("User4", "what the sigma", DateTime.now(), commentId)
+          ],
           0,
           0,
           0,

@@ -29,7 +29,10 @@ class ServerGetFunctions {
       for (Content obj in result) {
         obj.seenBy.add(phoneNumber.toString());
       }
+      print(result[1]);
+      print(result[1].comments);
     }
+
     return result;
   }
 

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:daily/App/serverCommunication/client_post_info.dart';
+import 'package:daily/backend/backend_classes/comment.dart';
 import 'package:daily/widget_classes/display_image_content_class.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -133,6 +134,10 @@ class _EditImageState extends State<EditImage> with WidgetsBindingObserver {
                       "timeOfPost": DateTime.now().toString(),
                       "likes": 0,
                       "dislikes": 0,
+                      "comments": [
+                        Comment("There are no comments", "!!!!!!!!",
+                            DateTime.now(), 12)
+                      ],
                       "noOfComments": 0,
                     },
                     location: "edit_image",
