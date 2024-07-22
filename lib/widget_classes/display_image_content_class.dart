@@ -1,4 +1,5 @@
 import 'dart:convert';
+//import 'dart:nativewrappers/_internal/vm/lib/core_patch.dart';
 //import '../backend_classes/content.dart';
 //import '../backend_classes/comment.dart';
 import 'dart:typed_data';
@@ -30,8 +31,20 @@ class _ImageWidgetState extends State<ImageWidget> {
   bool disliked = false;
   int? likes;
   int? dislikes;
-  dynamic commentDisplay = const Placeholder();
+  String newComment = "";
+  late TextEditingController _textController;
   @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
   Widget build(BuildContext context) {
     ClientPostInfo cPI = ClientPostInfo();
 
@@ -63,15 +76,6 @@ class _ImageWidgetState extends State<ImageWidget> {
       }
       likes = widget.recievedContent["likes"];
       dislikes = widget.recievedContent["dislikes"];
-      if (comments.length > 0) {
-        commentDisplay = CommentWidget(
-            username: widget.recievedContent["comments"][0]["username"],
-            comment: widget.recievedContent["comments"][0]["comment"],
-            timeOfComment: widget.recievedContent["comments"][0]
-                ["timeOfComment"],
-            commentId: widget.recievedContent["comments"][0]["commentId"]);
-        //"username"; "comment"; "timeOfComment"; "commentId"
-      }
       setState(() {});
     }
 
@@ -89,11 +93,23 @@ class _ImageWidgetState extends State<ImageWidget> {
           Text("DESCRIPTION: $description"),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
-          const Text("COMMENTS NOT IMPLEMENTED YET"),
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
           Text("Number of Comments: $noOfComments"),
-          commentDisplay,
+          Text("COMMENTS:"),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: comments.length,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return CommentWidget(
+                username: comments[index]["username"],
+                comment: comments[index]["comment"],
+                timeOfComment: comments[index]["timeOfComment"],
+                commentId: comments[index]["commentId"],
+              );
+            },
+          ),
           SizedBox(
               width: LDCWidth,
               height: LDCHeight,
@@ -150,6 +166,44 @@ class _ImageWidgetState extends State<ImageWidget> {
                       }
                     },
                   ))),
+          SizedBox(
+              width: LDCWidth,
+              height: LDCHeight,
+              child: Opacity(
+                  opacity: LDCOpacity,
+                  child: TextField(
+                    controller: _textController,
+                    onChanged: (value) {
+                      if (LDCOpacity == 1) {
+                        setState(() {
+                          newComment = value;
+                        });
+                      }
+                    },
+                  ))),
+          SizedBox(
+              width: LDCWidth,
+              height: LDCHeight,
+              child: Opacity(
+                  opacity: LDCOpacity,
+                  child: TextButton(
+                      onPressed: () {
+                        if (LDCOpacity == 1) {
+                          cPI.commentPost(
+                              myPhoneNumber, myUsername, id, newComment);
+                          setState(() {
+                            comments.add({
+                              "username": myUsername,
+                              "comment": newComment,
+                              "timeOfComment": DateTime.now().toString(),
+                              "commentId": 69
+                            });
+                            _textController.clear();
+                            newComment = "";
+                          });
+                        }
+                      },
+                      child: Text("POST COMMENT $newComment TO SERVER"))))
         ],
       ),
     );

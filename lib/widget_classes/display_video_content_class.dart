@@ -4,6 +4,7 @@ import 'dart:io';
 //import '../backend_classes/comment.dart';
 import 'package:daily/App/mainApplication/view_content.dart';
 import 'package:daily/App/serverCommunication/client_post_info.dart';
+import 'package:daily/widget_classes/display_comment.dart';
 import "package:flutter/material.dart";
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -37,6 +38,9 @@ class _VideoWidgetState extends State<VideoWidget> {
   int? likes;
   int? dislikes;
   double LDCOpacity = 0;
+  double LDCWidth = 0;
+  double LDCHeight = 0;
+  String newComment = "";
   Duration? savedDuration;
   Image? savedImage;
   // effectively I want to save the image and the duration for when the videoWidget is disposed of
@@ -50,9 +54,17 @@ class _VideoWidgetState extends State<VideoWidget> {
   late viewContent myView;
   double scrollerOpacity = 0.0;
   ClientPostInfo cPI = ClientPostInfo();
+  late TextEditingController _textController;
   void initState() {
     super.initState();
+    _textController = TextEditingController();
     makeThumbnail(0);
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 
   void makeThumbnail(int ms) async {
@@ -126,6 +138,7 @@ class _VideoWidgetState extends State<VideoWidget> {
     String description = widget.recievedContent["description"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     String id = widget.recievedContent["contentId"].toString();
+    List<dynamic> comments = widget.recievedContent["comments"];
     //List<Comment> comments = widget.recievedContent["comments"];
     //int likes = widget.recievedContent["likes"];
     //int dislikes = widget.recievedContent["dislikes"];
@@ -133,8 +146,12 @@ class _VideoWidgetState extends State<VideoWidget> {
     void trial() {
       if (location == "edit_video") {
         LDCOpacity = 0;
+        LDCWidth = 0;
+        LDCHeight = 0;
       } else {
         LDCOpacity = 1;
+        LDCWidth = 100;
+        LDCHeight = 100;
       }
       likes = widget.recievedContent["likes"];
       dislikes = widget.recievedContent["dislikes"];
@@ -172,7 +189,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             },
             child: SizedBox(
               width: 100,
-              height: 100,
+              height: 50,
               child: display, // Your video widget
             ),
           ),
@@ -187,59 +204,116 @@ class _VideoWidgetState extends State<VideoWidget> {
           ),
           Text("Time:$timeOfPost"),
           Text("Type:$type"),
-          const Text("COMMENTS NOT IMPLEMENTED YET"),
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
           Text("Number of Comments: $noOfComments"),
-          Opacity(
-              opacity: LDCOpacity,
-              child: TextButton(
-                child: Text("Like button"),
-                onPressed: () {
-                  if (LDCOpacity == 1) {
-                    if (liked == false) {
-                      liked = true;
-                      likes = likes! + 1;
-                      if (disliked == true) {
-                        disliked = false;
-                        dislikes = dislikes! - 1;
-                        cPI.unDislikePost(myPhoneNumber, myUsername, id);
+          Text("COMMENTS:"),
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: comments.length,
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return CommentWidget(
+                username: comments[index]["username"],
+                comment: comments[index]["comment"],
+                timeOfComment: comments[index]["timeOfComment"],
+                commentId: comments[index]["commentId"],
+              );
+            },
+          ),
+          SizedBox(
+              width: LDCWidth,
+              height: LDCHeight,
+              child: Opacity(
+                  opacity: LDCOpacity,
+                  child: TextButton(
+                    child: Text("Like button"),
+                    onPressed: () {
+                      if (LDCOpacity == 1) {
+                        if (liked == false) {
+                          liked = true;
+                          likes = likes! + 1;
+                          if (disliked == true) {
+                            disliked = false;
+                            dislikes = dislikes! - 1;
+                            cPI.unDislikePost(myPhoneNumber, myUsername, id);
+                          }
+                          cPI.likePost(myPhoneNumber, myUsername, id);
+                        } else {
+                          liked = false;
+                          likes = likes! - 1;
+                          cPI.unLikePost(myPhoneNumber, myUsername, id);
+                        }
+                        print(likes);
+                        setState(() {});
                       }
-                      cPI.likePost(myPhoneNumber, myUsername, id);
-                    } else {
-                      liked = false;
-                      likes = likes! - 1;
-                      cPI.unLikePost(myPhoneNumber, myUsername, id);
-                    }
-                    print(likes);
-                    setState(() {});
-                  }
-                },
-              )),
-          Opacity(
-              opacity: LDCOpacity,
-              child: TextButton(
-                child: Text("Dislike button"),
-                onPressed: () {
-                  if (LDCOpacity == 1) {
-                    if (disliked == false) {
-                      disliked = true;
-                      dislikes = dislikes! + 1;
-                      if (liked == true) {
-                        liked = false;
-                        likes = likes! - 1;
-                        cPI.unLikePost(myPhoneNumber, myUsername, id);
+                    },
+                  ))),
+          SizedBox(
+              width: LDCWidth,
+              height: LDCHeight,
+              child: Opacity(
+                  opacity: LDCOpacity,
+                  child: TextButton(
+                    child: Text("Dislike button"),
+                    onPressed: () {
+                      if (LDCOpacity == 1) {
+                        if (disliked == false) {
+                          disliked = true;
+                          dislikes = dislikes! + 1;
+                          if (liked == true) {
+                            liked = false;
+                            likes = likes! - 1;
+                            cPI.unLikePost(myPhoneNumber, myUsername, id);
+                          }
+                          cPI.dislikePost(myPhoneNumber, myUsername, id);
+                        } else {
+                          disliked = false;
+                          dislikes = dislikes! - 1;
+                          cPI.unDislikePost(myPhoneNumber, myUsername, id);
+                        }
+                        setState(() {});
                       }
-                      cPI.dislikePost(myPhoneNumber, myUsername, id);
-                    } else {
-                      disliked = false;
-                      dislikes = dislikes! - 1;
-                      cPI.unDislikePost(myPhoneNumber, myUsername, id);
-                    }
-                    setState(() {});
-                  }
-                },
-              )),
+                    },
+                  ))),
+          SizedBox(
+              width: LDCWidth,
+              height: LDCHeight,
+              child: Opacity(
+                  opacity: LDCOpacity,
+                  child: TextField(
+                    controller: _textController,
+                    onChanged: (value) {
+                      if (LDCOpacity == 1) {
+                        setState(() {
+                          newComment = value;
+                        });
+                      }
+                    },
+                  ))),
+          SizedBox(
+              width: LDCWidth,
+              height: LDCHeight,
+              child: Opacity(
+                  opacity: LDCOpacity,
+                  child: TextButton(
+                      onPressed: () {
+                        if (LDCOpacity == 1) {
+                          cPI.commentPost(
+                              myPhoneNumber, myUsername, id, newComment);
+                          setState(() {
+                            comments.add({
+                              "username": myUsername,
+                              "comment": newComment,
+                              "timeOfComment": DateTime.now().toString(),
+                              "commentId": 69
+                            });
+                            _textController.clear();
+                            newComment = "";
+                          });
+                        }
+                      },
+                      child: Text("POST COMMENT $newComment TO SERVER")))),
         ],
       ),
     );

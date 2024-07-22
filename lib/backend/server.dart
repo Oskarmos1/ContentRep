@@ -56,12 +56,7 @@ Future<void> handlePost(HttpRequest request) async {
         recieveInfo["Title"],
         recieveInfo["Description"],
         DateTime.now(),
-        [
-          Comment("User1", "hahathisis so funny", DateTime.now(), commentId),
-          Comment("User2", "lol", DateTime.now(), commentId),
-          Comment("User3", "123455667", DateTime.now(), commentId),
-          Comment("User4", "what the sigma", DateTime.now(), commentId)
-        ],
+        [],
         0,
         0,
         0,
@@ -78,18 +73,14 @@ Future<void> handlePost(HttpRequest request) async {
           recieveInfo["Title"],
           recieveInfo["Description"],
           DateTime.now(),
-          [
-            Comment("User1", "hahathisis so funny", DateTime.now(), commentId),
-            Comment("User2", "lol", DateTime.now(), commentId),
-            Comment("User3", "123455667", DateTime.now(), commentId),
-            Comment("User4", "what the sigma", DateTime.now(), commentId)
-          ],
+          [],
           0,
           0,
           0,
           [],
           0,
           contentId));
+      commentId += 1;
       contentId += 1;
     }
   } else if (recieveInfo["Location"] == "Like") {
@@ -118,6 +109,15 @@ Future<void> handlePost(HttpRequest request) async {
       if (allContent["main"]![i].contentId ==
           int.parse(recieveInfo["ContentId"])) {
         allContent["main"]![i].dislikes = allContent["main"]![i].dislikes - 1;
+      }
+    }
+  } else if (recieveInfo["Location"] == "NewComment") {
+    for (int i = 0; i < allContent["main"]!.length; i++) {
+      if (allContent["main"]![i].contentId ==
+          int.parse(recieveInfo["ContentId"])) {
+        allContent["main"]![i].comments.add(Comment(recieveInfo["Username"],
+            recieveInfo["Comment"], DateTime.now(), commentId));
+        commentId += 1;
       }
     }
   }

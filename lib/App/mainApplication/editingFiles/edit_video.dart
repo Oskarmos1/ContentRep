@@ -71,6 +71,14 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
             "timeOfPost": DateTime.now().toString(),
             "likes": 0,
             "dislikes": 0,
+            "comments": [
+              {
+                "comment": "There are no comments",
+                "timeOfComment": DateTime.now().toString(),
+                "username": "!!!!!!!!",
+                "commentId": 69
+              }
+            ],
             "contentId": "Will be given by server",
             "noOfComments": 0
           },

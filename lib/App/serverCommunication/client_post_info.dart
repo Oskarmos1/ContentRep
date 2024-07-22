@@ -70,7 +70,6 @@ class ClientPostInfo {
   }
 
   Future<void> dislikePost(phoneNumber, username, contentId) async {
-    print("CONTENT ID IN likePOST: " + contentId.toString());
     await http.post(Uri.parse(url),
         body: jsonEncode({
           "PhoneNumber": phoneNumber,
@@ -87,6 +86,17 @@ class ClientPostInfo {
           "Username": username,
           "Location": "UnDislike",
           "ContentId": contentId
+        }));
+  }
+
+  Future<void> commentPost(phoneNumber, username, contentId, comment) async {
+    await http.post(Uri.parse(url),
+        body: jsonEncode({
+          "PhoneNumber": phoneNumber,
+          "Username": username,
+          "Location": "NewComment",
+          "ContentId": contentId,
+          "Comment": comment
         }));
   }
 
