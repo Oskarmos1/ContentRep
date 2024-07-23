@@ -45,6 +45,7 @@ class _ImageWidgetState extends State<ImageWidget> {
     super.dispose();
   }
 
+  @override
   Widget build(BuildContext context) {
     ClientPostInfo cPI = ClientPostInfo();
 
@@ -96,7 +97,7 @@ class _ImageWidgetState extends State<ImageWidget> {
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
           Text("Number of Comments: $noOfComments"),
-          Text("COMMENTS:"),
+          const Text("COMMENTS:"),
           ListView.builder(
             shrinkWrap: true,
             itemCount: comments.length,
@@ -116,7 +117,7 @@ class _ImageWidgetState extends State<ImageWidget> {
               child: Opacity(
                   opacity: LDCOpacity,
                   child: TextButton(
-                    child: Text("Like button"),
+                    child: const Text("Like button"),
                     onPressed: () {
                       if (LDCOpacity == 1) {
                         if (liked == false) {
@@ -144,7 +145,7 @@ class _ImageWidgetState extends State<ImageWidget> {
               child: Opacity(
                   opacity: LDCOpacity,
                   child: TextButton(
-                    child: Text("Dislike button"),
+                    child: const Text("Dislike button"),
                     onPressed: () {
                       if (LDCOpacity == 1) {
                         if (disliked == false) {

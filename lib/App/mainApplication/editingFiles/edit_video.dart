@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:daily/App/mainApplication/editingFiles/videoEditor.dart';
 import 'package:daily/App/serverCommunication/client_post_info.dart';
@@ -17,7 +19,7 @@ class EditVideo extends StatefulWidget {
 class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
   String title = "";
   String description = "";
-  dynamic videoWidget = const Placeholder();
+  dynamic videoWidget = const Text("No video thumnail loaded");
   late XFile pickedFile;
   String? phoneNumber;
   String? username;
@@ -25,7 +27,6 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
   double waitingButtonOpacity = 0;
   bool started = true;
   ClientPostInfo cPI = ClientPostInfo();
-  DateTime? _lastLifecycleChange;
   @override
   void initState() {
     super.initState();
@@ -41,11 +42,6 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    //final now = DateTime.now();
-    //if (_lastLifecycleChange == null ||
-    //   now.difference(_lastLifecycleChange!) > Duration(seconds: 1)) {
-    //_lastLifecycleChange = now;
-
     if (state != AppLifecycleState.resumed) {
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/');
@@ -57,14 +53,12 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    void updateVideoWidget() {
+    void updateVideoWidget() async {
+      Uint8List x = await File(pickedFile.path).readAsBytes();
       setState(() {
         videoWidget = VideoWidget(
           recievedContent: {
-            "file": {
-              "Type": "VIDEO",
-              "File": {"path": pickedFile.path}
-            },
+            "file": {"Type": "VIDEO", "File": base64Encode(x)},
             "owner": username,
             "title": title,
             "description": description,
@@ -102,18 +96,21 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
 
     Future<void> encodeXFileVideo(XFile xFile) async {
       if (mounted) {
-        MediaInfo? returning = await VideoCompress.compressVideo(
+        MediaInfo? z = await VideoCompress.compressVideo(
           xFile.path,
           quality: VideoQuality.LowQuality,
           deleteOrigin: true,
           includeAudio: true,
           frameRate: 5,
         );
-
-        if (returning != null) {
-          await cPI.postContent(phoneNumber, username, title, description,
-              returning.toJson(), "VIDEO");
+        if (z != null && z.path != null) {
+          Uint8List x = await File(z.path!).readAsBytes();
+          String returning = base64Encode(x);
+          //print("ME MF:" + returning!.toJson().toString());
+          await cPI.postContent(
+              phoneNumber, username, title, description, returning, "VIDEO");
         }
+
         videoWidget.disposeVideoWidget();
 
         Navigator.pushReplacementNamed(
@@ -127,7 +124,7 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
       body: SafeArea(
         child: Column(
           children: <Widget>[
-            Text("TITLE:"),
+            const Text("TITLE:"),
             TextField(
               onChanged: (value) {
                 setState(() {
@@ -136,7 +133,7 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
                 });
               },
             ),
-            Text("DESCRIPTION:"),
+            const Text("DESCRIPTION:"),
             TextField(
               onChanged: (value) {
                 setState(() {
@@ -149,7 +146,7 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
                 onPressed: () async {
                   if (mounted) {
                     String originalPath = pickedFile.path;
-                    XFile? x = null;
+                    XFile? x;
                     videoWidget.disposeVideoWidget();
 
                     x = await Navigator.push(

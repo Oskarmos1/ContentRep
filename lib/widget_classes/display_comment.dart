@@ -22,10 +22,10 @@ class _CommentWidgetState extends State<CommentWidget> {
     return Container(
       child: Column(
         children: <Widget>[
-          Text("Username: " + widget.username),
-          Text("Comment: " + widget.comment),
-          Text("Time of comment: " + widget.timeOfComment.toString()),
-          Text("Comment ID: " + widget.commentId.toString()),
+          Text("Username: ${widget.username}"),
+          Text("Comment: ${widget.comment}"),
+          Text("Time of comment: ${widget.timeOfComment}"),
+          Text("Comment ID: ${widget.commentId}"),
         ],
       ),
     );

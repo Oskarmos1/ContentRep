@@ -41,7 +41,7 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
   late Timer _periodicTimer;
   Future<void> trial() async {
     final prefs = await SharedPreferences.getInstance();
-    phoneNumber = await prefs.getString('phoneNumber')!;
+    phoneNumber = prefs.getString('phoneNumber')!;
     myInformation = await cGI.getMyCurrentInfo(phoneNumber);
     setState(() {});
   }

@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 //import '../backend_classes/content.dart';
 //import '../backend_classes/comment.dart';
@@ -6,6 +8,7 @@ import 'package:daily/App/mainApplication/view_content.dart';
 import 'package:daily/App/serverCommunication/client_post_info.dart';
 import 'package:daily/widget_classes/display_comment.dart';
 import "package:flutter/material.dart";
+import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -48,17 +51,20 @@ class _VideoWidgetState extends State<VideoWidget> {
   bool canBeCleared = true;
   bool disposedOf = true;
   VideoPlayerController? loadedVideoFileController;
-  dynamic display = Placeholder();
+  dynamic display = Text("No video thumnail loaded");
   dynamic scroller = const Placeholder();
   Image? thumbnail;
   late viewContent myView;
   double scrollerOpacity = 0.0;
   ClientPostInfo cPI = ClientPostInfo();
   late TextEditingController _textController;
+  @override
   void initState() {
     super.initState();
     _textController = TextEditingController();
-    makeThumbnail(0);
+    makeThumbnail(
+      0,
+    );
   }
 
   @override
@@ -67,9 +73,18 @@ class _VideoWidgetState extends State<VideoWidget> {
     super.dispose();
   }
 
+  Future<File> saveVideo(videoBytes) async {
+    final tempDir = await getTemporaryDirectory();
+    File videoFile =
+        await File('${tempDir.path}/video.mp4').writeAsBytes(videoBytes);
+    return videoFile;
+  }
+
   void makeThumbnail(int ms) async {
+    Uint8List videoBytes = base64Decode(widget.recievedContent["file"]["File"]);
+    File videoFile = await saveVideo(videoBytes);
     final fileName = await VideoThumbnail.thumbnailFile(
-      video: widget.recievedContent["file"]["File"]["path"],
+      video: videoFile.path,
       imageFormat: ImageFormat.PNG,
       maxHeight:
           100, // specify the height of the thumbnail, let the width auto-scaled to keep the source aspect ratio
@@ -86,7 +101,6 @@ class _VideoWidgetState extends State<VideoWidget> {
     if (loadedVideoFileController?.value.isInitialized == true) {
       if (canBeCleared == true) {
         setState(() {
-          //makeThumbnail(0);
           display = thumbnail;
           scroller = const Placeholder();
           isPlaying = false;
@@ -101,12 +115,15 @@ class _VideoWidgetState extends State<VideoWidget> {
   late void Function() killAll;
   @override
   Widget build(BuildContext context) {
-    void loadContent() {
+    void loadContent() async {
+      Uint8List videoBytes =
+          base64Decode(widget.recievedContent["file"]["File"]);
+      File videoFile = await saveVideo(videoBytes);
       setState(() {
         scrollerOpacity = 1.0;
         disposedOf = false;
-        loadedVideoFileController = VideoPlayerController.file(
-            File(widget.recievedContent["file"]["File"]["path"]))
+        //print(widget.recievedContent);
+        loadedVideoFileController = VideoPlayerController.file(videoFile)
           ..addListener(() {
             if (mounted) {
               isPlaying = loadedVideoFileController!.value.isPlaying;
@@ -118,11 +135,11 @@ class _VideoWidgetState extends State<VideoWidget> {
         scroller = SizedBox(
           width: 200, // or a specific width like 200.0
           child: Opacity(
+            opacity: 1.0,
             child: VideoProgressIndicator(
               loadedVideoFileController!,
               allowScrubbing: true,
             ),
-            opacity: 1.0,
           ),
         );
       });
@@ -189,7 +206,7 @@ class _VideoWidgetState extends State<VideoWidget> {
             },
             child: SizedBox(
               width: 100,
-              height: 50,
+              height: 100,
               child: display, // Your video widget
             ),
           ),
@@ -207,7 +224,7 @@ class _VideoWidgetState extends State<VideoWidget> {
           Text("Likes:$likes"),
           Text("Dislikes:$dislikes"),
           Text("Number of Comments: $noOfComments"),
-          Text("COMMENTS:"),
+          const Text("COMMENTS:"),
           ListView.builder(
             shrinkWrap: true,
             itemCount: comments.length,
@@ -227,7 +244,7 @@ class _VideoWidgetState extends State<VideoWidget> {
               child: Opacity(
                   opacity: LDCOpacity,
                   child: TextButton(
-                    child: Text("Like button"),
+                    child: const Text("Like button"),
                     onPressed: () {
                       if (LDCOpacity == 1) {
                         if (liked == false) {
@@ -255,7 +272,7 @@ class _VideoWidgetState extends State<VideoWidget> {
               child: Opacity(
                   opacity: LDCOpacity,
                   child: TextButton(
-                    child: Text("Dislike button"),
+                    child: const Text("Dislike button"),
                     onPressed: () {
                       if (LDCOpacity == 1) {
                         if (disliked == false) {

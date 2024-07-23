@@ -84,7 +84,7 @@ class _EditImageState extends State<EditImage> with WidgetsBindingObserver {
             ? const Center(child: CircularProgressIndicator())
             : Column(
                 children: <Widget>[
-                  Text("TITLE:"),
+                  const Text("TITLE:"),
                   TextField(
                     onChanged: (value) {
                       setState(() {
@@ -92,7 +92,7 @@ class _EditImageState extends State<EditImage> with WidgetsBindingObserver {
                       });
                     },
                   ),
-                  Text("DESCRIPTION:"),
+                  const Text("DESCRIPTION:"),
                   TextField(
                     onChanged: (value) {
                       setState(() {

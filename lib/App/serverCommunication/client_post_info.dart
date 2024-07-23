@@ -49,7 +49,7 @@ class ClientPostInfo {
   }
 
   Future<void> likePost(phoneNumber, username, contentId) async {
-    print("CONTENT ID IN likePOST: " + contentId.toString());
+    print("CONTENT ID IN likePOST: $contentId");
     await http.post(Uri.parse(url),
         body: jsonEncode({
           "PhoneNumber": phoneNumber,
