@@ -194,7 +194,6 @@ class _viewContentState extends State<viewContent> with WidgetsBindingObserver {
                           } catch (e) {
                             print(e);
                           }
-
                           canGetNewInfo = false;
                         }
                       }

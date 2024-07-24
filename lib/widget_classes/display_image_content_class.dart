@@ -58,12 +58,12 @@ class _ImageWidgetState extends State<ImageWidget> {
     String myUsername = widget.myData[1];
     display = Image.memory(bytes);
     String id = widget.recievedContent["contentId"].toString();
-    String owner = widget.recievedContent["owner"];
+    String ownerUsername = widget.recievedContent["ownerUsername"];
+    String ownerPhoneNumber = widget.recievedContent["ownerPhoneNumber"];
     String title = widget.recievedContent["title"];
     String description = widget.recievedContent["description"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     List<dynamic> comments = widget.recievedContent["comments"];
-
     int noOfComments = widget.recievedContent["noOfComments"];
     void trial() {
       if (location == "edit_image") {
@@ -87,7 +87,8 @@ class _ImageWidgetState extends State<ImageWidget> {
     return Container(
       child: Column(
         children: <Widget>[
-          Text(owner),
+          Text("Owner Username: $ownerUsername"),
+          Text("Owner Phone Number: $ownerPhoneNumber"),
           Text("ID: $id"),
           Text("TITLE: $title"),
           SizedBox(width: 100, height: 100, child: display),
@@ -104,7 +105,8 @@ class _ImageWidgetState extends State<ImageWidget> {
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return CommentWidget(
-                username: comments[index]["username"],
+                username: comments[index]["ownerUsername"],
+                phoneNumber: comments[index]["ownerPhoneNumber"],
                 comment: comments[index]["comment"],
                 timeOfComment: comments[index]["timeOfComment"],
                 commentId: comments[index]["commentId"],
@@ -194,7 +196,8 @@ class _ImageWidgetState extends State<ImageWidget> {
                               myPhoneNumber, myUsername, id, newComment);
                           setState(() {
                             comments.add({
-                              "username": myUsername,
+                              "ownerUsername": myUsername,
+                              "ownerPhoneNumber": myPhoneNumber,
                               "comment": newComment,
                               "timeOfComment": DateTime.now().toString(),
                               "commentId": 69

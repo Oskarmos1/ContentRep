@@ -150,15 +150,13 @@ class _VideoWidgetState extends State<VideoWidget> {
     String myPhoneNumber = widget.myData[0];
     String myUsername = widget.myData[1];
     String type = widget.recievedContent["file"]["Type"];
-    String owner = widget.recievedContent["owner"];
+    String ownerUsername = widget.recievedContent["ownerUsername"];
+    String ownerPhoneNumber = widget.recievedContent["ownerPhoneNumber"];
     String title = widget.recievedContent["title"];
     String description = widget.recievedContent["description"];
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     String id = widget.recievedContent["contentId"].toString();
     List<dynamic> comments = widget.recievedContent["comments"];
-    //List<Comment> comments = widget.recievedContent["comments"];
-    //int likes = widget.recievedContent["likes"];
-    //int dislikes = widget.recievedContent["dislikes"];
     int noOfComments = widget.recievedContent["noOfComments"];
     void trial() {
       if (location == "edit_video") {
@@ -182,7 +180,8 @@ class _VideoWidgetState extends State<VideoWidget> {
     return Container(
       child: Column(
         children: <Widget>[
-          Text(owner),
+          Text("Owner Username: $ownerUsername"),
+          Text("Owner Phone Number: $ownerPhoneNumber"),
           Text("TITLE: $title"),
           Text("ID: $id"),
           GestureDetector(
@@ -231,7 +230,8 @@ class _VideoWidgetState extends State<VideoWidget> {
             physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return CommentWidget(
-                username: comments[index]["username"],
+                username: comments[index]["ownerUsername"],
+                phoneNumber: comments[index]["ownerPhoneNumber"],
                 comment: comments[index]["comment"],
                 timeOfComment: comments[index]["timeOfComment"],
                 commentId: comments[index]["commentId"],
@@ -320,7 +320,8 @@ class _VideoWidgetState extends State<VideoWidget> {
                               myPhoneNumber, myUsername, id, newComment);
                           setState(() {
                             comments.add({
-                              "username": myUsername,
+                              "ownerUsername": myUsername,
+                              "ownerPhoneNumber": myPhoneNumber,
                               "comment": newComment,
                               "timeOfComment": DateTime.now().toString(),
                               "commentId": 69

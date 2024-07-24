@@ -4,7 +4,8 @@ import 'comment.dart';
 
 class Content {
   Map file;
-  String owner;
+  String ownerUsername;
+  String ownerPhoneNumber;
   String title;
   String description;
   DateTime timeOfPost;
@@ -17,7 +18,8 @@ class Content {
   int contentId;
   Content(
       this.file,
-      this.owner,
+      this.ownerUsername,
+      this.ownerPhoneNumber,
       this.title,
       this.description,
       this.timeOfPost,
@@ -34,7 +36,8 @@ class Content {
       'file': file,
       'title': title,
       'description': description,
-      'owner': owner,
+      'ownerUsername': ownerUsername,
+      'ownerPhoneNumber': ownerPhoneNumber,
       'timeOfPost': timeOfPost.toIso8601String(),
       'comments': comments,
       'likes': likes,
@@ -50,7 +53,8 @@ class Content {
     Map<String, dynamic> json = jsonDecode(jsonString);
     return Content(
         json['file'],
-        json['owner'],
+        json['ownerUsername'],
+        json['ownerPhoneNumber'],
         json['title'],
         json['description'],
         json['timeOfPost'],

@@ -53,6 +53,7 @@ Future<void> handlePost(HttpRequest request) async {
     allContent[recieveInfo["Category"]]?.add(Content(
         recieveInfo["Post"],
         recieveInfo["Username"],
+        recieveInfo["PhoneNumber"],
         recieveInfo["Title"],
         recieveInfo["Description"],
         DateTime.now(),
@@ -70,6 +71,7 @@ Future<void> handlePost(HttpRequest request) async {
       allContent[recieveInfo["Category"]]?.add(Content(
           recieveInfo["Post"],
           recieveInfo["Username"],
+          recieveInfo["PhoneNumber"],
           recieveInfo["Title"],
           recieveInfo["Description"],
           DateTime.now(),
@@ -115,9 +117,14 @@ Future<void> handlePost(HttpRequest request) async {
     for (int i = 0; i < allContent["main"]!.length; i++) {
       if (allContent["main"]![i].contentId ==
           int.parse(recieveInfo["ContentId"])) {
-        allContent["main"]![i].comments.add(Comment(recieveInfo["Username"],
-            recieveInfo["Comment"], DateTime.now(), commentId));
+        allContent["main"]![i].comments.add(Comment(
+            recieveInfo["Username"],
+            recieveInfo["PhoneNumber"],
+            recieveInfo["Comment"],
+            DateTime.now(),
+            commentId));
         commentId += 1;
+        allContent["main"]![i].noOfComments += 1;
       }
     }
   }

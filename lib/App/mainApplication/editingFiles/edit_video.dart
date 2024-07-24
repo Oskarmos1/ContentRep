@@ -59,7 +59,8 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
         videoWidget = VideoWidget(
           recievedContent: {
             "file": {"Type": "VIDEO", "File": base64Encode(x)},
-            "owner": username,
+            "ownerUsername": username,
+            "ownerPhoneNumber": phoneNumber,
             "title": title,
             "description": description,
             "timeOfPost": DateTime.now().toString(),
@@ -69,7 +70,8 @@ class _EditVideoState extends State<EditVideo> with WidgetsBindingObserver {
               {
                 "comment": "There are no comments",
                 "timeOfComment": DateTime.now().toString(),
-                "username": "!!!!!!!!",
+                "ownerUsername": "!!!!!!!!",
+                "ownerPhoneNumber": phoneNumber,
                 "commentId": 69
               }
             ],

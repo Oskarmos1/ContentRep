@@ -126,7 +126,8 @@ class _EditImageState extends State<EditImage> with WidgetsBindingObserver {
                         "Type": "IMAGE",
                         "File": base64Encode(fileBytes!)
                       },
-                      "owner": username,
+                      "ownerUsername": username,
+                      "ownerPhoneNumber": phoneNumber,
                       "contentId": "it will be given by the server",
                       "title": title,
                       "description": description,
@@ -137,7 +138,8 @@ class _EditImageState extends State<EditImage> with WidgetsBindingObserver {
                         {
                           "comment": "There are no comments",
                           "timeOfComment": DateTime.now().toString(),
-                          "username": "!!!!!!!!",
+                          "ownerUsername": "!!!!!!!!",
+                          "ownerPhoneNumber": phoneNumber,
                           "commentId": 0
                         }
                       ],
