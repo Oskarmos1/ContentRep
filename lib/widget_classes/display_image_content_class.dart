@@ -65,6 +65,7 @@ class _ImageWidgetState extends State<ImageWidget> {
     String timeOfPost = widget.recievedContent["timeOfPost"].toString();
     List<dynamic> comments = widget.recievedContent["comments"];
     int noOfComments = widget.recievedContent["noOfComments"];
+    print(widget.recievedContent);
     void trial() {
       if (location == "edit_image") {
         LDCOpacity = 0;

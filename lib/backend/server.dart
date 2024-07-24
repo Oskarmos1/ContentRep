@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:daily/backend/backend_classes/comment.dart';
 import 'package:daily/backend/backend_classes/content.dart';
 
 import 'backend_classes/return_value.dart';
@@ -50,83 +49,30 @@ Future<void> handlePost(HttpRequest request) async {
     info = returns.info;
     purgatory = returns.purgatory;
   } else if (recieveInfo["Location"] == "newPost") {
-    allContent[recieveInfo["Category"]]?.add(Content(
-        recieveInfo["Post"],
-        recieveInfo["Username"],
-        recieveInfo["PhoneNumber"],
-        recieveInfo["Title"],
-        recieveInfo["Description"],
-        DateTime.now(),
-        [],
-        0,
-        0,
-        0,
-        [],
-        0.0,
-        contentId));
-    commentId += 1;
-    contentId += 1;
+    List returns = sPF.newPost(recieveInfo, allContent, contentId);
+    allContent = returns[0];
+    contentId = returns[1];
   } else if (recieveInfo["Location"] == "test") {
     for (int i = 0; i < 100; i++) {
-      allContent[recieveInfo["Category"]]?.add(Content(
-          recieveInfo["Post"],
-          recieveInfo["Username"],
-          recieveInfo["PhoneNumber"],
-          recieveInfo["Title"],
-          recieveInfo["Description"],
-          DateTime.now(),
-          [],
-          0,
-          0,
-          0,
-          [],
-          0,
-          contentId));
-      commentId += 1;
-      contentId += 1;
+      List returns = sPF.newPost(recieveInfo, allContent, contentId);
+      allContent = returns[0];
+      contentId = returns[1];
     }
   } else if (recieveInfo["Location"] == "Like") {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId ==
-          int.parse(recieveInfo["ContentId"])) {
-        allContent["main"]![i].likes = allContent["main"]![i].likes + 1;
-      }
-    }
+    allContent = sPF.likePost(allContent, int.parse(recieveInfo["ContentId"]));
   } else if (recieveInfo["Location"] == "UnLike") {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId ==
-          int.parse(recieveInfo["ContentId"])) {
-        allContent["main"]![i].likes = allContent["main"]![i].likes - 1;
-      }
-    }
+    allContent =
+        sPF.unLikePost(allContent, int.parse(recieveInfo["ContentId"]));
   } else if (recieveInfo["Location"] == "Dislike") {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId ==
-          int.parse(recieveInfo["ContentId"])) {
-        allContent["main"]![i].dislikes = allContent["main"]![i].dislikes + 1;
-      }
-    }
+    allContent =
+        sPF.dislikePost(allContent, int.parse(recieveInfo["ContentId"]));
   } else if (recieveInfo["Location"] == "UnDislike") {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId ==
-          int.parse(recieveInfo["ContentId"])) {
-        allContent["main"]![i].dislikes = allContent["main"]![i].dislikes - 1;
-      }
-    }
+    allContent =
+        sPF.unDislikePost(allContent, int.parse(recieveInfo["ContentId"]));
   } else if (recieveInfo["Location"] == "NewComment") {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId ==
-          int.parse(recieveInfo["ContentId"])) {
-        allContent["main"]![i].comments.add(Comment(
-            recieveInfo["Username"],
-            recieveInfo["PhoneNumber"],
-            recieveInfo["Comment"],
-            DateTime.now(),
-            commentId));
-        commentId += 1;
-        allContent["main"]![i].noOfComments += 1;
-      }
-    }
+    List returns = sPF.newComment(allContent, commentId, recieveInfo);
+    allContent = returns[0];
+    commentId = returns[1];
   }
 
   request.response
