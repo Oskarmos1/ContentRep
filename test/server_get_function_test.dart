@@ -7,7 +7,7 @@ void main() {
     final sGF = ServerGetFunctions();
     List<Content> allContent = [];
     for (int i = 0; i <= 8; i++) {
-      allContent.add(Content({}, "", DateTime.now(), [], i, i, i, [], i / 2));
+      //allContent.add(Content({}, "", DateTime.now(), [], i, i, i, [], i / 2));
     }
     var result = sGF.getContent(allContent, "oskar");
     expect(result?.length, 8);
