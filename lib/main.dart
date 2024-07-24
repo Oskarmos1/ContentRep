@@ -5,9 +5,9 @@ import 'package:daily/App/setup/no_connection.dart';
 import 'package:daily/App/setup/sign_up.dart';
 import 'package:flutter/material.dart';
 
-import 'mainApplication/view_content.dart';
-import 'setup/loading.dart';
-import 'setup/username.dart';
+import 'App/mainApplication/view_content.dart';
+import 'App/setup/loading.dart';
+import 'App/setup/username.dart';
 
 void main() {
   runApp(MaterialApp(
