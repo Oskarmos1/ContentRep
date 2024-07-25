@@ -32,5 +32,5 @@ void main() {
 //git add .
 //git commit -m ""
 //git push -u origin main
-
+//Next one 34
 //WIRELESS DEBUGGING: https://www.youtube.com/watch?v=msaloE7CLYo; IP ADDRESS: 192.168.0.58; PORT: 59513
