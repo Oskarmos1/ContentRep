@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyB-_4k_P9gEZRXkfJsNStOMhseOmfQEtrY</string>
+	<string>AIzaSyBpz3RV0_apFU5JZUzI4ML5ewdEUc5GzAw</string>
 	<key>GCM_SENDER_ID</key>
-	<string>572330007120</string>
+	<string>825451612360</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.oskarczyz.daily</string>
+	<string>com.example.content</string>
 	<key>PROJECT_ID</key>
-	<string>content-6ef23</string>
+	<string>content-97726</string>
 	<key>STORAGE_BUCKET</key>
-	<string>content-6ef23.appspot.com</string>
+	<string>content-97726.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -25,6 +25,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:572330007120:ios:ea02a038f7b29f9b868f55</string>
+	<string>1:825451612360:ios:fabdc8e868ec2458febdfd</string>
+	<key>DATABASE_URL</key>
+	<string>https://content-97726-default-rtdb.europe-west1.firebasedatabase.app</string>
 </dict>
 </plist>

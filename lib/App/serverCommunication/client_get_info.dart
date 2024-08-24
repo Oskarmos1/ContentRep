@@ -5,7 +5,7 @@ import 'package:daily/backend/backend_classes/content.dart';
 import 'package:http/http.dart' as http;
 
 class ClientGetInfo {
-  String url = "http://192.168.0.30:400";
+  String url = "http://192.168.0.19:400";
   Future<bool?> checkServerStatus(phoneNumber) async {
     try {
       http.Response? information = await http

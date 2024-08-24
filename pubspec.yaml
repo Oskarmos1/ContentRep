@@ -41,15 +41,22 @@ dependencies:
   shared_preferences: ^2.0.15
   intl_phone_number_input: ^0.7.2
   firebase_core: ^3.1.0
-  #firebase_admin: ^0.2.0
   firebase_auth: any
+  cloud_firestore: ^5.2.1
+  firebase_analytics: any 
+  
   image_picker: ^1.1.2
   flutter_image_compress: ^2.3.0
   video_player: any
-  video_compress: any
+  #video_compress: any
+  video_compress:
+    git:
+      url: https://github.com/SpectoraSoftware/VideoCompress
+      ref: caf41183e84adebd6ef5c8fba547937daf556a65 # Or master?
+
   camera: any
   google_mobile_ads: any
-  path_provider: ^2.0.15
+  path_provider: ^2.0.15  
   video_trimmer: any
   video_editor: any
   image_editor_plus: any

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:daily/firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -49,7 +50,11 @@ class _signUpState extends State<signUp> {
   }
 
   Future<void> initializeFirebase() async {
-    await Firebase.initializeApp();
+    //await Firebase.initializeApp();
+      WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   }
 
   bool canSubmit = false;
@@ -71,11 +76,12 @@ class _signUpState extends State<signUp> {
             InternationalPhoneNumberInput(
               onInputChanged: (PhoneNumber number) {
                 phoneNumber = number.phoneNumber!;
-              },
-              onInputValidated: (dynamic value) {
-                isValid = value;
-                setState(() {
-                  if (value == false) {
+                //Note this must be the shittiest validation I have seen in my entire lif
+                print(phoneNumber);
+                String pattern = r'^(?:[+0][1-9])?[0-9]{10,12}$';
+                RegExp regExp = new RegExp(pattern);
+                isValid = regExp.hasMatch(phoneNumber);
+                  if (isValid == false) {
                     setState(() {
                       buttonOpacity = 0;
                     });
@@ -84,7 +90,11 @@ class _signUpState extends State<signUp> {
                       buttonOpacity = 1;
                     });
                   }
-                });
+
+              },
+              onInputValidated: (dynamic value) {
+                print(value);
+
               },
               selectorConfig: const SelectorConfig(
                 selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
@@ -94,9 +104,12 @@ class _signUpState extends State<signUp> {
             Opacity(
               opacity: buttonOpacity,
               child: TextButton(
+                
                   child: Text("Send verification to: $phoneNumber"),
                   onPressed: () async {
+                    
                     if (isValid == true) {
+                      print('I have been run');
                       await FirebaseAuth.instance.verifyPhoneNumber(
                         phoneNumber: phoneNumber,
                         verificationCompleted:
@@ -121,6 +134,7 @@ class _signUpState extends State<signUp> {
                         },
                       );
                     }
+                    
                   }),
             ),
             Opacity(
