@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:daily/backend/backend_classes/comment.dart';
 import 'package:daily/backend/backend_classes/content.dart';
 
@@ -51,64 +53,81 @@ class ServerPostFunctions {
     return [allContent, contentId];
   }
 
-  Map<String, List<Content>> likePost(
-      Map<String, List<Content>> allContent, int contentId) {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId == contentId) {
-        allContent["main"]![i].likes = allContent["main"]![i].likes + 1;
-      }
-    }
-    return allContent;
+  void likePost(List<dynamic> message) {
+    Map<String, List<Content>> allContent = message[0];
+    int contentId = message[1];
+    SendPort sendPort = message[2];
+    allContent["main"]!
+        .where((content) => content.contentId == contentId)
+        .firstWhere((content) {
+      content.likes = content.likes + 1;
+      return true;
+    });
+
+    sendPort.send(allContent);
   }
 
-  Map<String, List<Content>> unLikePost(
-      Map<String, List<Content>> allContent, int contentId) {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId == contentId) {
-        allContent["main"]![i].likes = allContent["main"]![i].likes - 1;
-      }
-    }
-    return allContent;
+  void unLikePost(List<dynamic> message) {
+    Map<String, List<Content>> allContent = message[0];
+    int contentId = message[1];
+    SendPort sendPort = message[2];
+    allContent["main"]!
+        .where((content) => content.contentId == contentId)
+        .firstWhere((content) {
+      content.likes = content.likes - 1;
+      return true;
+    });
+
+    sendPort.send(allContent);
   }
 
-  Map<String, List<Content>> dislikePost(
-      Map<String, List<Content>> allContent, int contentId) {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId == contentId) {
-        allContent["main"]![i].dislikes = allContent["main"]![i].dislikes + 1;
-      }
-    }
-    return allContent;
+  void dislikePost(List<dynamic> message) {
+    Map<String, List<Content>> allContent = message[0];
+    int contentId = message[1];
+    SendPort sendPort = message[2];
+    allContent["main"]!
+        .where((content) => content.contentId == contentId)
+        .firstWhere((content) {
+      content.dislikes = content.dislikes + 1;
+      return true;
+    });
+
+    sendPort.send(allContent);
   }
 
-  Map<String, List<Content>> unDislikePost(
-      Map<String, List<Content>> allContent, int contentId) {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId == contentId) {
-        allContent["main"]![i].dislikes = allContent["main"]![i].dislikes - 1;
-      }
-    }
-    return allContent;
+  void unDislikePost(List<dynamic> message) {
+    Map<String, List<Content>> allContent = message[0];
+    int contentId = message[1];
+    SendPort sendPort = message[2];
+    allContent["main"]!
+        .where((content) => content.contentId == contentId)
+        .firstWhere((content) {
+      content.dislikes = content.dislikes - 1;
+      return true;
+    });
+
+    sendPort.send(allContent);
   }
 
-  List newComment(
-      Map<String, List<Content>> allContent, int commentId, Map recieveInfo) {
-    for (int i = 0; i < allContent["main"]!.length; i++) {
-      if (allContent["main"]![i].contentId ==
-          int.parse(recieveInfo["ContentId"])) {
-        allContent["main"]![i].comments.add(Comment(
-            recieveInfo["Username"],
-            recieveInfo["PhoneNumber"],
-            recieveInfo["Comment"],
-            DateTime.now(),
-            commentId));
-        commentId += 1;
-        allContent["main"]![i].noOfComments += 1;
-      }
-    }
-    return [allContent, commentId];
+  void newComment(List<dynamic> message) {
+    Map<String, List<Content>> allContent = message[0];
+    int commentId = message[1];
+    Map recieveInfo = message[2];
+    int contentId = message[3];
+    SendPort sendPort = message[4];
+    allContent["main"]!
+        .where((content) => content.contentId == contentId)
+        .firstWhere((content) {
+      content.comments.add(Comment(
+          recieveInfo["Username"],
+          recieveInfo["PhoneNumber"],
+          recieveInfo["Comment"],
+          DateTime.now(),
+          commentId));
+      content.noOfComments += 1;
+      return true;
+    });
+    commentId += 1;
+    sendPort.send([allContent, commentId]);
   }
 }
-
-
-//there is a big problem with moving all the information of the server into a function

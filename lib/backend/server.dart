@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:daily/backend/backend_classes/content.dart';
 
@@ -59,22 +60,71 @@ Future<void> handlePost(HttpRequest request) async {
       contentId = returns[1];
     }
   } else if (recieveInfo["Location"] == "Like") {
-    allContent = sPF.likePost(allContent, int.parse(recieveInfo["ContentId"]));
+    ReceivePort receivePort = ReceivePort();
+    await Isolate.spawn(sPF.likePost, [
+      allContent,
+      int.parse(recieveInfo["ContentId"]),
+      receivePort.sendPort
+    ]);
+    allContent = await receivePort.first;
   } else if (recieveInfo["Location"] == "UnLike") {
-    allContent =
-        sPF.unLikePost(allContent, int.parse(recieveInfo["ContentId"]));
+    ReceivePort receivePort1 = ReceivePort();
+    await Isolate.spawn(sPF.unLikePost, [
+      allContent,
+      int.parse(recieveInfo["ContentId"]),
+      receivePort1.sendPort
+    ]);
+    allContent = await receivePort1.first;
   } else if (recieveInfo["Location"] == "Dislike") {
-    allContent =
-        sPF.dislikePost(allContent, int.parse(recieveInfo["ContentId"]));
+    ReceivePort receivePort2 = ReceivePort();
+    await Isolate.spawn(sPF.dislikePost, [
+      allContent,
+      int.parse(recieveInfo["ContentId"]),
+      receivePort2.sendPort
+    ]);
+    allContent = await receivePort2.first;
   } else if (recieveInfo["Location"] == "UnDislike") {
-    allContent =
-        sPF.unDislikePost(allContent, int.parse(recieveInfo["ContentId"]));
+    ReceivePort receivePort3 = ReceivePort();
+    await Isolate.spawn(sPF.unDislikePost, [
+      allContent,
+      int.parse(recieveInfo["ContentId"]),
+      receivePort3.sendPort
+    ]);
+    allContent = await receivePort3.first;
   } else if (recieveInfo["Location"] == "NewComment") {
-    List returns = sPF.newComment(allContent, commentId, recieveInfo);
-    allContent = returns[0];
-    commentId = returns[1];
+    ReceivePort receivePort4 = ReceivePort();
+    await Isolate.spawn(sPF.newComment, [
+      allContent,
+      commentId,
+      recieveInfo,
+      int.parse(recieveInfo["ContentId"]),
+      receivePort4.sendPort
+    ]);
+    List returned = await receivePort4.first;
+    allContent = returned[0];
+    commentId = returned[1];
   }
 
+  /*
+  if (allContent["main"]?.isEmpty != true) {
+    for (int i = 1; i < allContent["main"]!.length; i++) {
+      print("\n");
+      Content x = allContent["main"]![i];
+      print("ContentId:${x.contentId.toString()}");
+      if (allContent["main"]![i].comments.isEmpty != true) {
+        Comment comment = allContent["main"]![i].comments[0];
+        print(comment.comment);
+        print(comment.ownerPhoneNumber);
+        print(comment.ownerUsername);
+        print(comment.timeOfComment);
+        print(comment.commentId.toString());
+      }
+
+      print("Likes: ${x.likes.toString()}");
+      print("Dislikes: ${x.dislikes.toString()}");
+    }
+  }
+  */
   request.response
     ..statusCode = HttpStatus.ok
     ..write("");
@@ -137,3 +187,8 @@ Future<HttpServer> createServer() async {
 
 //Currently won't connect if client is using a vpn
 //Occasionaly onStatePaused will not post anything to the server
+
+
+
+
+//FIX LIKING AND DISLIKING POSTS ON SERVER.
