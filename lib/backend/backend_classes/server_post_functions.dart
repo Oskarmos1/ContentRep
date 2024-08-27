@@ -1,8 +1,7 @@
 import 'dart:isolate';
 
-import 'package:daily/backend/backend_classes/comment.dart';
-import 'package:daily/backend/backend_classes/content.dart';
-
+import 'comment.dart';
+import 'content.dart';
 import 'return_value.dart';
 import 'user.dart';
 

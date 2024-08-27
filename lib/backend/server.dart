@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:daily/backend/backend_classes/content.dart';
-
+import 'backend_classes/content.dart';
 import 'backend_classes/return_value.dart';
 import 'backend_classes/server_get_functions.dart';
 import 'backend_classes/server_post_functions.dart';

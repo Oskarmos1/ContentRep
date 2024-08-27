@@ -1,5 +1,4 @@
-import 'package:daily/backend/backend_classes/content.dart';
-
+import 'content.dart';
 import 'user.dart';
 
 class ServerGetFunctions {
