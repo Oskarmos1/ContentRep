@@ -1,0 +1,29 @@
+//Must remember to set up ads for ios as well.
+//Must remember to have the posts saved when entering other screens in the application
+
+
+//git add .
+//git commit -m ""
+//git push -u origin main
+
+
+//Next one 34
+//WIRELESS DEBUGGING: https://www.youtube.com/watch?v=msaloE7CLYo; IP ADDRESS: 192.168.0.58; PORT: 59513
+
+
+//SSH to server: 
+//LINUX: sudo systemctl status ssh
+//LINUX: ifconfig
+//sudo systemctl enable ssh
+//sudo systemctl start ssh
+//sudo ufw allow 22
+//dart compile exe server.dart -o server
+ls
+cd
+rm
+(-r when for a folder)
+//-----ONLY COMMAND BELOW NEEDED-----
+//WINDOWS: ssh  oskarmos@192.168.0.103
+
+//scp C:\Users\oskar\OneDrive\Desktop\Home\Programming\Flutter\applications\content\lib\backend\server.dart oskarmos@192.168.0.103:/home/oskarmos/Documents - to update server (individual files)
+//scp -r C:\Users\oskar\OneDrive\Desktop\Home\Programming\Flutter\applications\content\lib\backend\server.dart oskarmos@192.168.0.103:/home/oskarmos/Documents - to update server (folders)
