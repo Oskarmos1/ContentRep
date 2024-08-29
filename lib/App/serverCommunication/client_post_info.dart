@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ClientPostInfo {
-  String url = "http://192.168.0.19:400";
+  String url = "http://86.31.40.16:5000";
+
   Future<bool> postNewUsername(phoneNumber, username) async {
     bool returning = true;
     try {

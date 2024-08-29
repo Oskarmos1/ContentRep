@@ -26,4 +26,4 @@ rm
 //WINDOWS: ssh  oskarmos@192.168.0.103
 
 //scp C:\Users\oskar\OneDrive\Desktop\Home\Programming\Flutter\applications\content\lib\backend\server.dart oskarmos@192.168.0.103:/home/oskarmos/Documents - to update server (individual files)
-//scp -r C:\Users\oskar\OneDrive\Desktop\Home\Programming\Flutter\applications\content\lib\backend\server.dart oskarmos@192.168.0.103:/home/oskarmos/Documents - to update server (folders)
+//scp -r C:\Users\oskar\OneDrive\Desktop\Home\Programming\Flutter\applications\content\lib\backend oskarmos@192.168.0.103:/home/oskarmos/Desktop - to update server (folders)
