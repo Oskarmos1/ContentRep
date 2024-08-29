@@ -6,35 +6,34 @@ import 'return_value.dart';
 import 'user.dart';
 
 class ServerPostFunctions {
-  ReturnValue oldUsername(Map<String, User> info, Map<String, User> purgatory,
-      Map recieveInfo, Map<String, List<Content>> allContent) {
+  ReturnValue oldUsername(
+      Map<String, User> info, Map<String, User> purgatory, Map recieveInfo) {
     // If the user has used the application before and wishes to recover their previous account.
     info[recieveInfo["PhoneNumber"]] =
-        User(purgatory[recieveInfo["PhoneNumber"]]!.username, {});
+        User(purgatory[recieveInfo["PhoneNumber"]]!.username);
     purgatory.remove(recieveInfo['PhoneNumber']);
-    return ReturnValue(info, purgatory, allContent);
+    return ReturnValue(info, purgatory, []);
   }
 
   ReturnValue newUsername(Map<String, User> info, Map<String, User> purgatory,
-      Map recieveInfo, Map<String, List<Content>> allContent) {
-    info[recieveInfo["PhoneNumber"]] = User(recieveInfo["Username"], {});
+      Map recieveInfo, List<Content> allContent) {
+    info[recieveInfo["PhoneNumber"]] = User(recieveInfo["Username"]);
 
-    return ReturnValue(info, purgatory, allContent);
+    return ReturnValue(info, purgatory, []);
   }
 
-  ReturnValue killApp(Map<String, User> info, Map<String, User> purgatory,
-      Map recieveInfo, Map<String, List<Content>> allContent) {
+  ReturnValue killApp(
+      Map<String, User> info, Map<String, User> purgatory, Map recieveInfo) {
     if (purgatory[recieveInfo["PhoneNumber"]] == null ||
         info[recieveInfo["PhoneNumber"]] != null) {
       purgatory[recieveInfo["PhoneNumber"]] = info[recieveInfo["PhoneNumber"]]!;
       info.remove(recieveInfo['PhoneNumber']);
     }
-    return ReturnValue(info, purgatory, allContent);
+    return ReturnValue(info, purgatory, []);
   }
 
-  List newPost(
-      Map recieveInfo, Map<String, List<Content>> allContent, int contentId) {
-    allContent[recieveInfo["Category"]]?.add(Content(
+  List newPost(Map recieveInfo, List<Content> allContent, int contentId) {
+    allContent.add(Content(
         recieveInfo["Post"],
         recieveInfo["Username"],
         recieveInfo["PhoneNumber"],
@@ -47,16 +46,17 @@ class ServerPostFunctions {
         0,
         [],
         0.0,
-        contentId));
+        contentId,
+        recieveInfo["Category"]));
     contentId += 1;
     return [allContent, contentId];
   }
 
   void likePost(List<dynamic> message) {
-    Map<String, List<Content>> allContent = message[0];
+    List<Content> allContent = message[0];
     int contentId = message[1];
     SendPort sendPort = message[2];
-    allContent["main"]!
+    allContent
         .where((content) => content.contentId == contentId)
         .firstWhere((content) {
       content.likes = content.likes + 1;
@@ -67,10 +67,10 @@ class ServerPostFunctions {
   }
 
   void unLikePost(List<dynamic> message) {
-    Map<String, List<Content>> allContent = message[0];
+    List<Content> allContent = message[0];
     int contentId = message[1];
     SendPort sendPort = message[2];
-    allContent["main"]!
+    allContent
         .where((content) => content.contentId == contentId)
         .firstWhere((content) {
       content.likes = content.likes - 1;
@@ -81,10 +81,10 @@ class ServerPostFunctions {
   }
 
   void dislikePost(List<dynamic> message) {
-    Map<String, List<Content>> allContent = message[0];
+    List<Content> allContent = message[0];
     int contentId = message[1];
     SendPort sendPort = message[2];
-    allContent["main"]!
+    allContent
         .where((content) => content.contentId == contentId)
         .firstWhere((content) {
       content.dislikes = content.dislikes + 1;
@@ -95,10 +95,10 @@ class ServerPostFunctions {
   }
 
   void unDislikePost(List<dynamic> message) {
-    Map<String, List<Content>> allContent = message[0];
+    List<Content> allContent = message[0];
     int contentId = message[1];
     SendPort sendPort = message[2];
-    allContent["main"]!
+    allContent
         .where((content) => content.contentId == contentId)
         .firstWhere((content) {
       content.dislikes = content.dislikes - 1;
@@ -109,12 +109,12 @@ class ServerPostFunctions {
   }
 
   void newComment(List<dynamic> message) {
-    Map<String, List<Content>> allContent = message[0];
+    List<Content> allContent = message[0];
     int commentId = message[1];
     Map recieveInfo = message[2];
     int contentId = message[3];
     SendPort sendPort = message[4];
-    allContent["main"]!
+    allContent
         .where((content) => content.contentId == contentId)
         .firstWhere((content) {
       content.comments.add(Comment(

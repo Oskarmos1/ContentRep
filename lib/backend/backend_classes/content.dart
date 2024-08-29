@@ -16,6 +16,7 @@ class Content {
   List<String> seenBy;
   double contentScore;
   int contentId;
+  String category;
   Content(
       this.file,
       this.ownerUsername,
@@ -29,7 +30,8 @@ class Content {
       this.noOfComments,
       this.seenBy,
       this.contentScore,
-      this.contentId);
+      this.contentId,
+      this.category);
 
   Map<String, dynamic> toJson() {
     return {
@@ -45,7 +47,8 @@ class Content {
       'noOfComments': noOfComments,
       'seenBy': seenBy,
       'contentScore': contentScore,
-      'contentId': contentId
+      'contentId': contentId,
+      'category': category
     };
   }
 
@@ -64,7 +67,8 @@ class Content {
         json['noOfComments'],
         json['seenBy'],
         json['contentScore'],
-        json['contentId']);
+        json['contentId'],
+        json['category']);
   }
 }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 //import 'dart:nativewrappers/_internal/vm/lib/core_patch.dart';
 //import '../backend_classes/content.dart';
@@ -29,6 +30,7 @@ class _ImageWidgetState extends State<ImageWidget> {
   bool started = true;
   bool liked = false;
   bool disliked = false;
+  bool buttonCooldown = false;
   int? likes;
   int? dislikes;
   String newComment = "";
@@ -123,22 +125,28 @@ class _ImageWidgetState extends State<ImageWidget> {
                     child: const Text("Like button"),
                     onPressed: () {
                       if (LDCOpacity == 1) {
-                        if (liked == false) {
-                          liked = true;
-                          likes = likes! + 1;
-                          if (disliked == true) {
-                            disliked = false;
-                            dislikes = dislikes! - 1;
-                            cPI.unDislikePost(myPhoneNumber, myUsername, id);
+                        if (buttonCooldown == false) {
+                          buttonCooldown = true;
+                          if (liked == false) {
+                            liked = true;
+                            likes = likes! + 1;
+                            if (disliked == true) {
+                              disliked = false;
+                              dislikes = dislikes! - 1;
+                              cPI.unDislikePost(myPhoneNumber, myUsername, id);
+                            }
+                            cPI.likePost(myPhoneNumber, myUsername, id);
+                          } else {
+                            liked = false;
+                            likes = likes! - 1;
+                            cPI.unLikePost(myPhoneNumber, myUsername, id);
                           }
-                          cPI.likePost(myPhoneNumber, myUsername, id);
-                        } else {
-                          liked = false;
-                          likes = likes! - 1;
-                          cPI.unLikePost(myPhoneNumber, myUsername, id);
+                          print(likes);
+                          setState(() {});
+                          Timer(Duration(milliseconds: 500), () {
+                            buttonCooldown = false;
+                          });
                         }
-                        print(likes);
-                        setState(() {});
                       }
                     },
                   ))),
@@ -151,22 +159,28 @@ class _ImageWidgetState extends State<ImageWidget> {
                     child: const Text("Dislike button"),
                     onPressed: () {
                       if (LDCOpacity == 1) {
-                        if (disliked == false) {
-                          disliked = true;
-                          dislikes = dislikes! + 1;
-                          if (liked == true) {
-                            liked = false;
-                            likes = likes! - 1;
-                            cPI.unLikePost(myPhoneNumber, myUsername, id);
+                        if (buttonCooldown == false) {
+                          buttonCooldown = true;
+                          if (disliked == false) {
+                            disliked = true;
+                            dislikes = dislikes! + 1;
+                            if (liked == true) {
+                              liked = false;
+                              likes = likes! - 1;
+                              cPI.unLikePost(myPhoneNumber, myUsername, id);
+                            }
+                            cPI.dislikePost(myPhoneNumber, myUsername, id);
+                          } else {
+                            disliked = false;
+                            dislikes = dislikes! - 1;
+                            cPI.unDislikePost(myPhoneNumber, myUsername, id);
                           }
-                          cPI.dislikePost(myPhoneNumber, myUsername, id);
-                        } else {
-                          disliked = false;
-                          dislikes = dislikes! - 1;
-                          cPI.unDislikePost(myPhoneNumber, myUsername, id);
+                          print(likes);
+                          setState(() {});
+                          Timer(Duration(milliseconds: 500), () {
+                            buttonCooldown = false;
+                          });
                         }
-                        print(likes);
-                        setState(() {});
                       }
                     },
                   ))),

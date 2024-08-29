@@ -1,5 +1,3 @@
-//Must remember to set up ads for ios as well.
-//Must remember to have the posts saved when entering other screens in the application
 
 
 //git add .

@@ -36,7 +36,6 @@ class ServerGetFunctions {
   List getMyCurrentInfo(info, phoneNumber) {
     return [
       info[phoneNumber]?.username,
-      info[phoneNumber]?.friends,
     ];
   }
 

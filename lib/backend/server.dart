@@ -2,19 +2,24 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:daily/backend/backend_classes/comment.dart';
+
 import 'backend_classes/content.dart';
 import 'backend_classes/return_value.dart';
 import 'backend_classes/server_get_functions.dart';
 import 'backend_classes/server_post_functions.dart';
 import 'backend_classes/user.dart';
 
+//PhoneNumber, Username,
 Map<String, User> info = {};
 Map<String, User> purgatory = {};
 int contentId = 0;
 int commentId = 0;
-Map<String, List<Content>> allContent = {
+List<Content> allContent =
+    []; /*{
+  
   "main": [],
-  /*
+  
   "film/cartoon": [],
   "music": [],
   "nature": [],
@@ -26,8 +31,9 @@ Map<String, List<Content>> allContent = {
   "education": [],
   "STEM": [],
   "other": [],
-  */
+  
 };
+*/
 //
 //Images are stored according to which category they belong to. However, the user can sort what type of images they want to see first for example: recommended, most recent, most discussed, most liked, most disliked.
 Future<void> handlePost(HttpRequest request) async {
@@ -40,12 +46,11 @@ Future<void> handlePost(HttpRequest request) async {
     info = returns.info;
     purgatory = returns.purgatory;
   } else if (recieveInfo["Location"] == "UsernameO") {
-    ReturnValue returns =
-        sPF.oldUsername(info, purgatory, recieveInfo, allContent);
+    ReturnValue returns = sPF.oldUsername(info, purgatory, recieveInfo);
     info = returns.info;
     purgatory = returns.purgatory;
   } else if (recieveInfo["Location"] == "ExitApp") {
-    ReturnValue returns = sPF.killApp(info, purgatory, recieveInfo, allContent);
+    ReturnValue returns = sPF.killApp(info, purgatory, recieveInfo);
     info = returns.info;
     purgatory = returns.purgatory;
   } else if (recieveInfo["Location"] == "newPost") {
@@ -65,6 +70,7 @@ Future<void> handlePost(HttpRequest request) async {
       int.parse(recieveInfo["ContentId"]),
       receivePort.sendPort
     ]);
+    print("LIKED");
     allContent = await receivePort.first;
   } else if (recieveInfo["Location"] == "UnLike") {
     ReceivePort receivePort1 = ReceivePort();
@@ -73,6 +79,7 @@ Future<void> handlePost(HttpRequest request) async {
       int.parse(recieveInfo["ContentId"]),
       receivePort1.sendPort
     ]);
+    print("UNLIKED");
     allContent = await receivePort1.first;
   } else if (recieveInfo["Location"] == "Dislike") {
     ReceivePort receivePort2 = ReceivePort();
@@ -81,6 +88,7 @@ Future<void> handlePost(HttpRequest request) async {
       int.parse(recieveInfo["ContentId"]),
       receivePort2.sendPort
     ]);
+    print("DISLIKED");
     allContent = await receivePort2.first;
   } else if (recieveInfo["Location"] == "UnDislike") {
     ReceivePort receivePort3 = ReceivePort();
@@ -89,6 +97,7 @@ Future<void> handlePost(HttpRequest request) async {
       int.parse(recieveInfo["ContentId"]),
       receivePort3.sendPort
     ]);
+    print("UNDISLIKED");
     allContent = await receivePort3.first;
   } else if (recieveInfo["Location"] == "NewComment") {
     ReceivePort receivePort4 = ReceivePort();
@@ -104,26 +113,27 @@ Future<void> handlePost(HttpRequest request) async {
     commentId = returned[1];
   }
 
-  /*
-  if (allContent["main"]?.isEmpty != true) {
-    for (int i = 1; i < allContent["main"]!.length; i++) {
-      print("\n");
-      Content x = allContent["main"]![i];
-      print("ContentId:${x.contentId.toString()}");
-      if (allContent["main"]![i].comments.isEmpty != true) {
-        Comment comment = allContent["main"]![i].comments[0];
-        print(comment.comment);
-        print(comment.ownerPhoneNumber);
-        print(comment.ownerUsername);
-        print(comment.timeOfComment);
-        print(comment.commentId.toString());
-      }
+  if (allContent.isEmpty != true) {
+    for (int i = 1; i < allContent.length; i++) {
+      if (allContent[i].contentId == 39) {
+        print("\n");
+        Content x = allContent[i];
+        print("ContentId:${x.contentId.toString()}");
+        if (allContent[i].comments.isEmpty != true) {
+          Comment comment = allContent[i].comments[0];
+          print(comment.comment);
+          print(comment.ownerPhoneNumber);
+          print(comment.ownerUsername);
+          print(comment.timeOfComment);
+          print(comment.commentId.toString());
+        }
 
-      print("Likes: ${x.likes.toString()}");
-      print("Dislikes: ${x.dislikes.toString()}");
+        print("Likes: ${x.likes.toString()}");
+        print("Dislikes: ${x.dislikes.toString()}");
+      }
     }
   }
-  */
+
   request.response
     ..statusCode = HttpStatus.ok
     ..write("");
@@ -138,12 +148,11 @@ void handleGet(HttpRequest request) {
   Object? result;
 
   if (location == "getContent") {
-    result = sGF.getContent(allContent["main"], phoneNumber);
+    result = sGF.getContent(allContent, phoneNumber);
   } else if (location == "checkActivity") {
     result = true;
   } else if (location == "getMyCurrentInfo") {
-    if (info[phoneNumber]?.username == null &&
-        info[phoneNumber]?.friends == null) {
+    if (info[phoneNumber]?.username == null) {
       info[phoneNumber] = purgatory[phoneNumber]!;
       purgatory.remove(phoneNumber);
     }
@@ -186,8 +195,5 @@ Future<HttpServer> createServer() async {
 
 //Currently won't connect if client is using a vpn
 //Occasionaly onStatePaused will not post anything to the server
-
-
-
 
 //FIX LIKING AND DISLIKING POSTS ON SERVER.
