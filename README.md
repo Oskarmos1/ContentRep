@@ -1,6 +1,6 @@
-Daily
+Content
 
-Daily is a cross-platform social media application built with Flutter, Firebase, and Python Cloud Functions. It enables users to create, edit, and share photo and video content, chat with friends, and interact through comments.
+Content is a cross-platform social media application built with Flutter, Firebase, and Python Cloud Functions. It enables users to create, edit, and share photo and video content, chat with friends, and interact through comments.
 
 ⚡ Features
 Authentication: Phone number verification (intl_phone_number_input) and contact syncing.
