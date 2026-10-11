@@ -9,7 +9,7 @@ Content Sharing: Upload photos and videos with automatic compression and thumbna
 
 Media Editors: In-app image cropping/filters (image_editor_plus) and video trimming (video_editor, video_trimmer).
 
-Social Engagement: Real-time messaging and post commenting powered by Cloud Firestore.
+Social Engagement: Post creation made through the use of a server hosted on a rasberry pi and port forwarding.
 
 Monetization: Integrated Google Mobile Ads and Firebase Analytics.
 
